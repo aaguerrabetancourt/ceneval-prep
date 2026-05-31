@@ -336,7 +336,7 @@ function QuestionScreen({ area, exam, qIndex, questions, streak, aiKey, onAnswer
     setAiLoading(true)
     setAiText(null)
     try {
-      const res = await fetch('/api/anthropic/v1/messages', {
+      const res = await fetch('/api/tutor', {
         method: 'POST',
         headers: {
           'x-api-key': aiKey,
