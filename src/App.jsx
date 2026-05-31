@@ -329,17 +329,13 @@ function QuestionScreen({ area, exam, qIndex, questions, streak, aiKey, onAnswer
   }
 
   async function callTutor() {
-    if (!aiKey) {
-      setAiText('⚠️ Configura VITE_ANTHROPIC_API_KEY en tu archivo .env para usar el Tutor IA.')
-      return
-    }
     setAiLoading(true)
     setAiText(null)
     try {
       const res = await fetch('/api/tutor', {
         method: 'POST',
         headers: {
-          'x-api-key': aiKey,
+          ...(aiKey && { 'x-api-key': aiKey }),
           'anthropic-version': '2023-06-01',
           'content-type': 'application/json',
         },
