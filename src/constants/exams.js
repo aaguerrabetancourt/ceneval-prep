@@ -1,0 +1,46 @@
+export const EXAMS = [
+  {
+    id: "exani2",
+    name: "EXANI-II",
+    fullName: "Examen Nacional de Ingreso a la Licenciatura",
+    emoji: "🎓",
+    color: "#6B7C45",
+    colorLight: "#EBF0DC",
+    description: "Para ingresar a la licenciatura. Evalúa habilidades básicas de pensamiento y conocimientos de bachillerato.",
+    areas: [
+      { id: "mat", name: "Pensamiento Matemático", emoji: "📐", questions: 30 },
+      { id: "ana", name: "Pensamiento Analítico", emoji: "🧩", questions: 30 },
+      { id: "lec", name: "Comprensión Lectora", emoji: "📖", questions: 30 },
+      { id: "red", name: "Redacción Indirecta", emoji: "✍️", questions: 30 },
+    ],
+  },
+  {
+    id: "exani3",
+    name: "EXANI-III",
+    fullName: "Examen Nacional de Ingreso al Posgrado",
+    emoji: "🔬",
+    color: "#5B6FA0",
+    colorLight: "#E8ECFA",
+    description: "Para ingresar a especialidad, maestría o doctorado. Evalúa habilidades intelectuales avanzadas.",
+    areas: [
+      { id: "verb", name: "Habilidad Verbal", emoji: "💬", questions: 30 },
+      { id: "hmat", name: "Habilidad Matemática", emoji: "🔢", questions: 30 },
+      { id: "leca", name: "Comprensión Lectora Avanzada", emoji: "📚", questions: 30 },
+      { id: "ing", name: "Inglés Técnico", emoji: "🌐", questions: 30 },
+    ],
+  },
+  {
+    id: "egel",
+    name: "EGEL",
+    fullName: "Examen General para el Egreso de la Licenciatura",
+    emoji: "🏛️",
+    color: "#8B5E3C",
+    colorLight: "#F5EDE4",
+    description: "Para egresados de licenciatura. Certifica los conocimientos y habilidades del área disciplinar.",
+    areas: [
+      { id: "disc", name: "Área Disciplinar", emoji: "🎯", questions: 40 },
+      { id: "etic", name: "Ética Profesional", emoji: "⚖️", questions: 20 },
+      { id: "com", name: "Comunicación", emoji: "📡", questions: 20 },
+    ],
+  },
+];
