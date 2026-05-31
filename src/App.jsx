@@ -110,9 +110,8 @@ function LoginScreen({ onLogin, onReg }) {
   return (
     <Shell>
       <div style={{ padding: '56px 24px 32px', flex: 1, display: 'flex', flexDirection: 'column', gap: 36 }}>
-        <div>
-          <h1 style={{ fontFamily: T.fontDisplay, fontSize: 36, lineHeight: 1.1, color: T.olive, letterSpacing: '-0.5px' }}>Certus</h1>
-          <p style={{ color: T.textSub, marginTop: 6, fontSize: 15, fontStyle: 'italic' }}>Prepárate con confianza</p>
+        <div style={{ textAlign: 'center', padding: '8px 0 4px' }}>
+          <img src="/certus-logo.svg" alt="Certus" style={{ width: '85%', maxWidth: 300 }} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <Field label="Correo" value={email} onChange={setEmail} type="email" placeholder="correo@ejemplo.com" />
@@ -149,9 +148,9 @@ function RegisterScreen({ onReg, onLogin }) {
   return (
     <Shell>
       <div style={{ padding: '56px 24px 32px', flex: 1, display: 'flex', flexDirection: 'column', gap: 36 }}>
-        <div>
-          <h1 style={{ fontFamily: T.fontDisplay, fontSize: 26 }}>Crear cuenta</h1>
-          <p style={{ color: T.textSub, marginTop: 8, fontSize: 15 }}>Empieza a prepararte hoy</p>
+        <div style={{ textAlign: 'center' }}>
+          <img src="/certus-logo.svg" alt="Certus" style={{ width: '70%', maxWidth: 220 }} />
+          <p style={{ color: T.textSub, marginTop: 10, fontSize: 15 }}>Empieza a prepararte hoy</p>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <Field label="Nombre" value={name} onChange={setName} placeholder="Tu nombre" />
@@ -176,15 +175,17 @@ function HomeScreen({ user, streak, progress, onExam, onProgress, onLogout }) {
   return (
     <Shell>
       {/* Header */}
-      <div style={{ padding: '24px 20px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div>
-          <p style={{ fontSize: 13, color: T.textSub }}>Hola,</p>
-          <h2 style={{ fontSize: 22, fontFamily: T.fontDisplay }}>{user.name} 👋</h2>
+      <div style={{ padding: '20px 20px 4px', borderBottom: `1px solid ${T.border}`, marginBottom: 8 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <img src="/certus-logo.svg" alt="Certus" style={{ width: 110, display: 'block' }} />
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+            <StreakBadge n={streak} />
+            <span onClick={onLogout} style={{ fontSize: 13, color: T.textMuted, cursor: 'pointer' }}>Salir</span>
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center', paddingTop: 4 }}>
-          <StreakBadge n={streak} />
-          <span onClick={onLogout} style={{ fontSize: 13, color: T.textMuted, cursor: 'pointer' }}>Salir</span>
-        </div>
+        <p style={{ fontSize: 14, color: T.textSub, marginTop: 8, paddingBottom: 12 }}>
+          Hola, <strong style={{ color: T.text }}>{user.name}</strong> 👋
+        </p>
       </div>
 
       {/* Mini stat */}
@@ -251,15 +252,16 @@ function HomeScreen({ user, streak, progress, onExam, onProgress, onLogout }) {
 function ExamDetailScreen({ exam, progress, freeUsed, isPremium, onArea, onBack }) {
   return (
     <Shell>
-      <div style={{ padding: '20px 20px 0', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <button onClick={onBack} style={{
-          background: T.bgMuted, border: 'none', borderRadius: 10,
-          width: 36, height: 36, fontSize: 18, color: T.textSub, cursor: 'pointer',
-        }}>←</button>
-        <div>
-          <h2 style={{ fontSize: 20, fontFamily: T.fontDisplay }}>{exam.name}</h2>
-          <p style={{ fontSize: 12, color: T.textSub }}>{exam.fullName}</p>
+      <div style={{ padding: '16px 20px 12px', borderBottom: `1px solid ${T.border}` }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+          <button onClick={onBack} style={{
+            background: T.bgMuted, border: 'none', borderRadius: 10,
+            width: 36, height: 36, fontSize: 18, color: T.textSub, cursor: 'pointer',
+          }}>←</button>
+          <img src="/certus-logo.svg" alt="Certus" style={{ width: 90 }} />
         </div>
+        <h2 style={{ fontSize: 20, fontFamily: T.fontDisplay }}>{exam.name}</h2>
+        <p style={{ fontSize: 12, color: T.textSub }}>{exam.fullName}</p>
       </div>
 
       <div style={{ padding: '18px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
