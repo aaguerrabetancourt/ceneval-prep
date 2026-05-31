@@ -111,8 +111,8 @@ function LoginScreen({ onLogin, onReg }) {
     <Shell>
       <div style={{ padding: '56px 24px 32px', flex: 1, display: 'flex', flexDirection: 'column', gap: 36 }}>
         <div>
-          <h1 style={{ fontFamily: T.fontDisplay, fontSize: 30, lineHeight: 1.2 }}>CENEVAL<br/>Prep</h1>
-          <p style={{ color: T.textSub, marginTop: 8, fontSize: 15 }}>Tu guía inteligente de estudio</p>
+          <h1 style={{ fontFamily: T.fontDisplay, fontSize: 36, lineHeight: 1.1, color: T.olive, letterSpacing: '-0.5px' }}>Certus</h1>
+          <p style={{ color: T.textSub, marginTop: 6, fontSize: 15, fontStyle: 'italic' }}>Prepárate con confianza</p>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <Field label="Correo" value={email} onChange={setEmail} type="email" placeholder="correo@ejemplo.com" />
