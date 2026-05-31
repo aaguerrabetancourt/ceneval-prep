@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useUser, useClerk, SignIn } from '@clerk/clerk-react'
 import { T } from './constants/theme'
 import { EXAMS } from './constants/exams'
 import { QUESTIONS } from './data/questions'
@@ -667,8 +668,10 @@ function ProgressScreen({ progress, streak, onBack }) {
 
 // ── Root App ─────────────────────────────────────────────────────────────────
 export default function App() {
-  const [screen,   setScreen]   = useState(() => load('cp_user', null) ? 'home' : 'login')
-  const [user,     setUser]     = useState(() => load('cp_user', null))
+  const { isSignedIn, user: clerkUser, isLoaded } = useUser()
+  const { signOut } = useClerk()
+
+  const [screen,   setScreen]   = useState('home')
   const [exam,     setExam]     = useState(null)
   const [area,     setArea]     = useState(null)
   const [qIdx,     setQIdx]     = useState(0)
@@ -683,6 +686,11 @@ export default function App() {
 
   const aiKey = import.meta.env.VITE_ANTHROPIC_API_KEY
 
+  const appUser = isSignedIn ? {
+    name: clerkUser?.firstName || clerkUser?.fullName?.split(' ')[0] || 'Usuario',
+    email: clerkUser?.primaryEmailAddress?.emailAddress || ''
+  } : null
+
   const bumpStreak = useCallback(() => {
     const t = today()
     const s = load('cp_streak', { count: 0, date: '' })
@@ -694,8 +702,7 @@ export default function App() {
   }, [])
 
   // Auth
-  function login(u)   { setUser(u); save('cp_user', u); setScreen('home') }
-  function logout()   { setUser(null); save('cp_user', null); setScreen('login') }
+  function logout() { signOut() }
 
   // Navigation
   function selectExam(e) { setExam(e); setScreen('examDetail') }
@@ -737,16 +744,42 @@ export default function App() {
 
   const qs = area ? (QUESTIONS[area.id] || []) : []
 
+  // Pantalla de carga mientras Clerk inicializa
+  if (!isLoaded) {
+    return (
+      <>
+        <style dangerouslySetInnerHTML={{ __html: G }} />
+        <Shell>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+            <p style={{ color: T.textSub, fontSize: 15 }}>Cargando...</p>
+          </div>
+        </Shell>
+      </>
+    )
+  }
+
+  // Pantalla de login con Google via Clerk
+  if (!isSignedIn) {
+    return (
+      <>
+        <style dangerouslySetInnerHTML={{ __html: G }} />
+        <Shell>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 24px', gap: 32 }}>
+            <img src="/certus-logo.svg" alt="Certus" style={{ width: '85%', maxWidth: 300 }} />
+            <SignIn routing="hash" />
+          </div>
+        </Shell>
+      </>
+    )
+  }
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: G }} />
 
-      {screen === 'login'      && <LoginScreen  onLogin={login} onReg={() => setScreen('register')} />}
-      {screen === 'register'   && <RegisterScreen onReg={login} onLogin={() => setScreen('login')} />}
-
-      {screen === 'home'       && user && (
+      {screen === 'home'       && appUser && (
         <HomeScreen
-          user={user} streak={streak} progress={progress}
+          user={appUser} streak={streak} progress={progress}
           onExam={selectExam} onProgress={() => setScreen('progress')} onLogout={logout}
         />
       )}
