@@ -766,7 +766,44 @@ export default function App() {
         <Shell>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 24px', gap: 32 }}>
             <img src="/certus-logo.svg" alt="Certus" style={{ width: '85%', maxWidth: 300 }} />
-            <SignIn routing="hash" />
+            <SignIn
+              routing="hash"
+              appearance={{
+                variables: {
+                  colorPrimary: '#8FA88B',
+                  colorBackground: '#F5F0E6',
+                  colorText: '#4A433E',
+                  colorTextSecondary: '#7A6F65',
+                  colorInputBackground: '#EDE5D4',
+                  colorInputText: '#4A433E',
+                  colorNeutral: '#4A433E',
+                  borderRadius: '12px',
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: '15px',
+                },
+                elements: {
+                  card: {
+                    boxShadow: 'none',
+                    border: '1.5px solid #D5C9B5',
+                    borderRadius: '16px',
+                    padding: '24px',
+                    background: '#F5F0E6',
+                  },
+                  headerTitle: { display: 'none' },
+                  headerSubtitle: { display: 'none' },
+                  socialButtonsBlockButton: {
+                    border: '1.5px solid #D5C9B5',
+                    borderRadius: '10px',
+                    background: '#EDE5D4',
+                    color: '#4A433E',
+                    fontWeight: '600',
+                  },
+                  footer: { display: 'none' },
+                  dividerLine: { background: '#D5C9B5' },
+                  dividerText: { color: '#B0A79E' },
+                },
+              }}
+            />
           </div>
         </Shell>
       </>
