@@ -142,10 +142,19 @@ export const IconLogout = (p) => ic(() => (<>
   <path d="M10 12h10M17 9l3 3-3 3" />
 </>), p)
 
+// EXANI-I
+export const IconMedal = (p) => ic((fill) => (<>
+  <circle cx="12" cy="8.5" r="5.5" fill={fill} />
+  <path d="M8.5 13.5 7 21l5-2.5 5 2.5-1.5-7.5" />
+  <path d="M12 5.5v3l1.8 1.1" />
+</>), p)
+
 // Mapa id -> icono
 export const ICONS = {
+  exani1: IconMedal,
   exani2: IconCap, exani3: IconMicroscope, egel: IconColumns,
   mat: IconCompass, ana: IconPuzzle, lec: IconBook, red: IconPencil,
   verb: IconChat, hmat: IconHash, leca: IconBooks, ing: IconGlobe,
   disc: IconTarget, etic: IconScale, com: IconSignal,
+  imat: IconCompass, iana: IconPuzzle, ilec: IconBook, iverb: IconChat,
 }

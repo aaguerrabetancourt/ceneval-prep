@@ -1,5 +1,20 @@
 export const EXAMS = [
   {
+    id: "exani1",
+    name: "EXANI-I",
+    short: "Bachillerato",
+    fullName: "Examen Nacional de Ingreso al Bachillerato",
+    color: "#7A5FA5",
+    tint: "#EDE8F5",
+    description: "Para ingresar al bachillerato. Evalua habilidades matematicas, verbales, analiticas y comprension lectora.",
+    areas: [
+      { id: "imat",  name: "Habilidades Matematicas",  questions: 30 },
+      { id: "iana",  name: "Pensamiento Analitico",    questions: 30 },
+      { id: "ilec",  name: "Comprension Lectora",      questions: 30 },
+      { id: "iverb", name: "Habilidades Verbales",     questions: 30 },
+    ],
+  },
+  {
     id: "exani2",
     name: "EXANI-II",
     short: "Licenciatura",
