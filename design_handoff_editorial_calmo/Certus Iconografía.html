@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Certus · Iconografía</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --bg:#F1EBDE; --card:#FBF8F0; --sunk:#ECE4D4;
+      --ink:#3B362F; --sub:#857A6C; --faint:#B3A899;
+      --line:#E4DACA; --laurel:#7E9A77; --laurelDk:#566F50; --ochre:#B08D4F; --terra:#C2664F;
+      --display:'Montserrat',sans-serif; --body:'Inter',sans-serif;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{background:var(--bg);font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased;}
+    .wrap{max-width:1040px;margin:0 auto;padding:56px 32px 80px;}
+    .eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ochre);}
+    h1{font-family:var(--display);font-size:40px;font-weight:800;letter-spacing:-.025em;margin-top:12px;line-height:1.02;}
+    .lede{font-size:15px;color:var(--sub);margin-top:14px;max-width:560px;line-height:1.6;}
+    .head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:30px;margin-bottom:8px;}
+    .logo{height:34px;}
+    section{margin-top:44px;}
+    .sec-label{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;}
+    .sec-label h2{font-family:var(--display);font-size:17px;font-weight:800;letter-spacing:-.01em;}
+    .sec-label span{font-size:12.5px;color:var(--faint);}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:14px;}
+    .cell{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 16px 16px;
+      display:flex;flex-direction:column;align-items:center;text-align:center;
+      box-shadow:0 1px 2px rgba(74,67,62,.04),0 10px 24px -18px rgba(74,67,62,.28);}
+    .token{width:56px;height:56px;border-radius:16px;background:var(--sunk);display:flex;align-items:center;justify-content:center;color:var(--laurel);}
+    .nm{font-size:13px;font-weight:700;color:var(--ink);margin-top:14px;line-height:1.3;}
+    .ctx{font-size:11px;color:var(--sub);margin-top:3px;line-height:1.4;}
+    .swap{display:flex;align-items:center;gap:7px;margin-top:13px;padding-top:12px;border-top:1px solid var(--line);width:100%;justify-content:center;}
+    .swap .em{font-size:16px;filter:grayscale(.15);}
+    .swap .arr{color:var(--faint);display:flex;}
+    .swap .mini{color:var(--laurelDk);display:flex;}
+    .foot{margin-top:56px;padding-top:26px;border-top:1px solid var(--line);font-size:12.5px;color:var(--faint);line-height:1.6;}
+  </style>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel" src="icons.jsx"></script>
+  <script type="text/babel" data-presets="react">
+    const SECTIONS = [
+      {
+        title: 'Exámenes', note: '3 íconos',
+        items: [
+          { C: 'IconCap',        nm: 'Birrete',      ctx: 'EXANI-II',  em: '🎓' },
+          { C: 'IconMicroscope', nm: 'Microscopio',  ctx: 'EXANI-III', em: '🔬' },
+          { C: 'IconColumns',    nm: 'Columnas',     ctx: 'EGEL',      em: '🏛️' },
+        ],
+      },
+      {
+        title: 'Áreas de estudio', note: '11 íconos',
+        items: [
+          { C: 'IconCompass', nm: 'Compás',     ctx: 'Pensamiento Matemático', em: '📐' },
+          { C: 'IconPuzzle',  nm: 'Pieza',      ctx: 'Pensamiento Analítico',  em: '🧩' },
+          { C: 'IconBook',    nm: 'Libro',      ctx: 'Comprensión Lectora',    em: '📖' },
+          { C: 'IconPencil',  nm: 'Lápiz',      ctx: 'Redacción Indirecta',    em: '✍️' },
+          { C: 'IconChat',    nm: 'Diálogo',    ctx: 'Habilidad Verbal',       em: '💬' },
+          { C: 'IconHash',    nm: 'Numeral',    ctx: 'Habilidad Matemática',   em: '🔢' },
+          { C: 'IconBooks',   nm: 'Tomos',      ctx: 'Comp. Lectora Avanzada', em: '📚' },
+          { C: 'IconGlobe',   nm: 'Globo',      ctx: 'Inglés Técnico',         em: '🌐' },
+          { C: 'IconTarget',  nm: 'Diana',      ctx: 'Área Disciplinar',       em: '🎯' },
+          { C: 'IconScale',   nm: 'Balanza',    ctx: 'Ética Profesional',      em: '⚖️' },
+          { C: 'IconSignal',  nm: 'Señal',      ctx: 'Comunicación',           em: '📡' },
+        ],
+      },
+      {
+        title: 'Sistema e interfaz', note: '7 íconos',
+        items: [
+          { C: 'IconFlame', nm: 'Llama',     ctx: 'Racha de días',     em: '🔥' },
+          { C: 'IconChart', nm: 'Gráfica',   ctx: 'Ver mi progreso',   em: '📊' },
+          { C: 'IconSpark', nm: 'Destello',  ctx: 'Tutor IA',          em: '🤖' },
+          { C: 'IconLock',  nm: 'Candado',   ctx: 'Contenido Premium', em: '🔒' },
+          { C: 'IconCheck', nm: 'Acierto',   ctx: 'Respuesta correcta',em: '✅' },
+          { C: 'IconX',     nm: 'Error',     ctx: 'Respuesta incorrecta', em: '❌' },
+          { C: 'IconArrowRight', nm: 'Avance', ctx: 'Siguiente / navegación', em: '➡️' },
+        ],
+      },
+    ]
+
+    function Cell({ it }) {
+      const Icon = window[it.C]
+      const Mini = window[it.C]
+      return (
+        <div className="cell">
+          <div className="token"><Icon size={30} stroke="var(--laurel)" sw={1.6} /></div>
+          <p className="nm">{it.nm}</p>
+          <p className="ctx">{it.ctx}</p>
+          <div className="swap">
+            <span className="em">{it.em}</span>
+            <span className="arr"><window.IconArrowRight size={15} stroke="var(--faint)" /></span>
+            <span className="mini"><Mini size={18} stroke="var(--laurelDk)" sw={1.7} /></span>
+          </div>
+        </div>
+      )
+    }
+
+    function App() {
+      return (
+        <div className="wrap">
+          <div className="head">
+            <div>
+              <p className="eyebrow">Sistema de diseño · Editorial Calmo</p>
+              <h1>Iconografía</h1>
+              <p className="lede">21 íconos propios de trazo geométrico con remates redondeados, que reemplazan por completo a los emoji. Un único peso de línea, esquinas suaves y la posibilidad de teñirse del color de cada examen.</p>
+            </div>
+            <img className="logo" src="assets/certus-logo-mini.svg" alt="Certus" />
+          </div>
+
+          {SECTIONS.map(s => (
+            <section key={s.title}>
+              <div className="sec-label">
+                <h2>{s.title}</h2>
+                <span>{s.note}</span>
+              </div>
+              <div className="grid">
+                {s.items.map(it => <Cell key={it.C + it.ctx} it={it} />)}
+              </div>
+            </section>
+          ))}
+
+          <p className="foot">El emoji a la izquierda de cada tarjeta indica el símbolo que se sustituye. Los íconos heredan <code>currentColor</code>, por lo que en la app se muestran en verde laurel dentro de una ficha de arena, o teñidos del color del examen (oliva, azul pizarra, terracota).</p>
+        </div>
+      )
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />)
+  </script>
+
+  <template id="__bundler_thumbnail">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100" height="100" fill="#7E9A77"/>
+      <g fill="none" stroke="#FBF8F0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(30 30) scale(1.7)">
+        <path d="M2.5 8.5 12 4.5l9.5 4-9.5 4-9.5-4Z"/>
+        <path d="M6 10.5V15c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4.5"/>
+      </g>
+    </svg>
+  </template>
+</body>
+</html>

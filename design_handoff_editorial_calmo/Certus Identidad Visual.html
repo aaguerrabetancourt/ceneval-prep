@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Certus · Nueva identidad visual</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    html, body { margin: 0; height: 100%; background: #E7E0D0; }
+    * { box-sizing: border-box; }
+  </style>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel" src="design-canvas.jsx"></script>
+  <script type="text/babel" src="icons.jsx"></script>
+  <script type="text/babel" src="data.jsx"></script>
+  <script type="text/babel" src="directionA.jsx"></script>
+  <script type="text/babel" src="directionB.jsx"></script>
+  <script type="text/babel" src="directionC.jsx"></script>
+  <script type="text/babel" data-presets="react">
+    const { useState } = React
+    const W = 320, H = 694
+
+    const SECTIONS = [
+      { id: 'dirA', title: 'A · Editorial Calmo', subtitle: 'Refinamiento sofisticado — mucho aire, anillos de progreso, jerarquía tipográfica fuerte.', dir: window.DirA },
+      { id: 'dirB', title: 'B · Botánico Laurel', subtitle: 'La marca-laurel al frente — bandas tintadas por examen, motivo vegetal, iconos duotono.', dir: window.DirB },
+      { id: 'dirC', title: 'C · Cálido Contemporáneo', subtitle: 'Sistema de tiles — cabeceras de color, iconos en blanco, tipografía más grande y enérgica.', dir: window.DirC },
+    ]
+    const SCREENS = [
+      { id: 'home', label: 'Inicio (dashboard)', key: 'Home' },
+      { id: 'exam', label: 'Detalle de examen', key: 'Exam' },
+      { id: 'q', label: 'Pregunta + feedback', key: 'Question' },
+      { id: 'res', label: 'Resultado', key: 'Result' },
+    ]
+
+    function App() {
+      return (
+        <DesignCanvas>
+          {SECTIONS.map(sec => (
+            <DCSection key={sec.id} id={sec.id} title={sec.title} subtitle={sec.subtitle}>
+              {SCREENS.map(s => {
+                const Comp = sec.dir[s.key]
+                return (
+                  <DCArtboard key={s.id} id={sec.id + '-' + s.id} label={s.label} width={W} height={H}>
+                    <Comp />
+                  </DCArtboard>
+                )
+              })}
+            </DCSection>
+          ))}
+        </DesignCanvas>
+      )
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />)
+  </script>
+
+  <template id="__bundler_thumbnail">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100" height="100" fill="#7E9A77"/>
+      <g transform="translate(50 50)">
+        <path d="M0 -22 C 6 -8, 6 8, 0 24 C -6 8, -6 -8, 0 -22 Z" fill="#FBF8F0"/>
+        <path d="M14 -14 C 6 -6, -2 0, -2 12" stroke="#FBF8F0" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </g>
+    </svg>
+  </template>
+</body>
+</html>

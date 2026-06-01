@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Certus · Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;background:#E7E0D0;font-family:'Inter',sans-serif;}
+    #root{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px 20px;}
+    .cap{font-size:12px;color:#857A6C;text-align:center;display:flex;align-items:center;gap:8px;}
+    .cap b{color:#3B362F;font-weight:700;}
+    .dot{width:5px;height:5px;border-radius:50%;background:#B08D4F;}
+    ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:#D5C9B5;border-radius:4px;}
+  </style>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel" src="icons.jsx"></script>
+  <script type="text/babel" src="data.jsx"></script>
+  <script type="text/babel" src="calmo.jsx"></script>
+  <script type="text/babel" data-presets="react">
+    const { useState } = React
+    const STREAK = 12
+
+    function Dashboard() {
+      const [open, setOpen] = useState(false)
+      const [activeId, setActiveId] = useState('exani2')
+      const [notif, setNotif] = useState(true)
+      const [tutor, setTutor] = useState(true)
+      const [goal, setGoal] = useState(20)
+      const ex = EXAMS.find(e => e.id === activeId)
+      const sc = scoreFor(ex)
+      const next = [...ex.areas].sort((a,b)=>a.pct-b.pct)[0]   // recommended: lowest progress
+      const NextIcon = ICONS[next.id]
+
+      return (
+        <>
+        <div style={{ width:340, height:724, background:K.bg, borderRadius:34, overflow:'hidden',
+          fontFamily:K.body, color:K.ink, position:'relative', boxShadow:'0 30px 60px -30px rgba(48,43,37,.5), 0 0 0 1px rgba(48,43,37,.05)' }}>
+          <StatusBar color={K.ink}/>
+
+          {/* Header switcher */}
+          <div style={{ position:'relative', zIndex:30, padding:'8px 18px 12px', background:K.bg }}>
+            <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+              <button onClick={()=>setOpen(o=>!o)} style={{ flex:1, display:'flex', alignItems:'center', gap:11, cursor:'pointer',
+                background:K.card, border:`1px solid ${K.line}`, borderRadius:15, padding:'9px 12px', textAlign:'left' }}>
+                <div style={{ width:34, height:34, borderRadius:10, background:K.laurelTint, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                  {React.createElement(ICONS[ex.id], { size:18, stroke:K.laurelDk, sw:1.6 })}
+                </div>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <p style={{ fontSize:9.5, fontWeight:700, letterSpacing:'.12em', textTransform:'uppercase', color:K.ochre }}>Estudiando</p>
+                  <p style={{ fontFamily:K.display, fontSize:15, fontWeight:800, letterSpacing:'-.01em', marginTop:1 }}>{ex.name}</p>
+                </div>
+                <span style={{ display:'flex', color:K.sub, transition:'transform .25s', transform: open?'rotate(180deg)':'none' }}><IconChevron size={20} stroke={K.sub}/></span>
+              </button>
+              <div style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 12px', borderRadius:13, background:K.ochreTint, alignSelf:'stretch' }}>
+                <IconFlame size={16} stroke={K.ochre} fill="#F2DFB4" sw={1.5}/>
+                <span style={{ fontSize:14, fontWeight:800, color:K.ochre }}>{STREAK}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Scrollable dashboard content */}
+          <div style={{ position:'absolute', top:96, left:0, right:0, bottom:0, overflowY:'auto',
+            filter: open?'blur(1.5px)':'none', transition:'filter .25s' }}>
+            <div style={{ padding:'4px 20px 24px' }}>
+              <h1 style={{ fontFamily:K.display, fontSize:25, fontWeight:800, letterSpacing:'-.02em', lineHeight:1.08, marginTop:6 }}>Buen día,<br/>Mariana.</h1>
+              <p style={{ fontSize:12.5, color:K.sub, marginTop:8, lineHeight:1.5 }}>Vas <strong style={{color:ex.color}}>{sc.acc}%</strong> de aciertos en <strong style={{color:K.ink}}>{ex.name}</strong>.</p>
+
+              {/* Continue hero */}
+              <div style={{ marginTop:16, background:K.laurelTint, borderRadius:20, padding:'16px 16px', position:'relative', overflow:'hidden' }}>
+                <Eyebrow color={K.laurelDk}>Continúa donde quedaste</Eyebrow>
+                <div style={{ display:'flex', alignItems:'center', gap:13, marginTop:12 }}>
+                  <div style={{ width:46, height:46, borderRadius:13, background:'#fff', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                    <NextIcon size={24} stroke={ex.color} sw={1.6}/>
+                  </div>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <p style={{ fontFamily:K.display, fontSize:16, fontWeight:700, color:K.ink, letterSpacing:'-.01em' }}>{next.name}</p>
+                    <p style={{ fontSize:11.5, color:K.laurelDk, opacity:.85, marginTop:2 }}>{next.correct}/{next.total} correctas · {next.pct}%</p>
+                  </div>
+                  <div style={{ position:'relative', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                    <Ring pct={next.pct} color={ex.color} size={50} sw={4} track="#fff"/>
+                    <span style={{ position:'absolute', fontFamily:K.display, fontSize:12, fontWeight:800, color:ex.color }}>{next.pct}<span style={{fontSize:8}}>%</span></span>
+                  </div>
+                </div>
+                <button style={{ width:'100%', marginTop:14, padding:'13px', borderRadius:13, border:'none', background:K.laurel, color:'#fff',
+                  fontFamily:K.display, fontWeight:700, fontSize:14, display:'flex', alignItems:'center', justifyContent:'center', gap:8, cursor:'pointer' }}>
+                  Reanudar práctica <IconArrowRight size={17} stroke="#fff"/>
+                </button>
+              </div>
+
+              {/* Areas list */}
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', margin:'22px 2px 12px' }}>
+                <Eyebrow>Áreas de {ex.name}</Eyebrow>
+                <span style={{ fontSize:11, color:K.sub }}>{ex.areas.length} áreas</span>
+              </div>
+              <div style={{ display:'flex', flexDirection:'column', gap:9 }}>
+                {ex.areas.map(a=>{
+                  const Icon = ICONS[a.id]
+                  return (
+                    <div key={a.id} style={{ background:K.card, border:`1px solid ${K.line}`, borderRadius:15, padding:'14px 15px', cursor:'pointer' }}>
+                      <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+                        <div style={{ width:38, height:38, borderRadius:11, background: a.locked?K.sunk:ex.tint, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                          {a.locked ? <IconLock size={19} stroke={K.faint} fill="#EBE2D0" sw={1.6}/> : <Icon size={20} stroke={ex.color} sw={1.6}/>}
+                        </div>
+                        <div style={{ flex:1, minWidth:0 }}>
+                          <p style={{ fontSize:13.5, fontWeight:700, color:K.ink }}>{a.name}</p>
+                          <p style={{ fontSize:11, color:K.sub, marginTop:2 }}>{a.correct}/{a.total} correctas</p>
+                        </div>
+                        {a.locked
+                          ? <span style={{ display:'flex', alignItems:'center', gap:4, fontSize:10.5, fontWeight:700, color:K.ochre, background:K.ochreTint, padding:'4px 9px', borderRadius:999 }}><IconLock size={11} stroke={K.ochre} sw={1.7}/> Premium</span>
+                          : <span style={{ fontFamily:K.display, fontSize:14, fontWeight:800, color:ex.color }}>{a.pct}%</span>}
+                      </div>
+                      <div style={{ marginTop:11, height:5, borderRadius:5, background:K.sunk, overflow:'hidden' }}>
+                        <div style={{ height:'100%', width:`${a.pct}%`, background:a.locked?K.faint:ex.color, borderRadius:5 }}/>
+                      </div>
+                      {a.free && <p style={{ fontSize:10.5, color:K.ochre, marginTop:8, fontWeight:600 }}>3 preguntas gratis restantes</p>}
+                    </div>
+                  )
+                })}
+              </div>
+
+              <button style={{ width:'100%', marginTop:18, padding:'13px', borderRadius:14, border:`1.5px solid ${K.line}`, background:K.card, color:K.laurelDk,
+                fontFamily:K.display, fontWeight:700, fontSize:13.5, display:'flex', alignItems:'center', justifyContent:'center', gap:8, cursor:'pointer' }}>
+                <IconChart size={16} stroke={K.laurelDk} sw={1.7}/> Ver mi progreso completo
+              </button>
+            </div>
+          </div>
+
+          <DropdownMenu open={open} activeId={activeId} setActiveId={setActiveId}
+            notif={notif} setNotif={setNotif} tutor={tutor} setTutor={setTutor}
+            goal={goal} setGoal={setGoal} onClose={()=>setOpen(false)}/>
+        </div>
+
+        <p className="cap"><span className="dot"></span> Toca <b>Estudiando · {ex.name}</b> para cambiar de examen, ver puntuación y ajustes</p>
+        </>
+      )
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(<Dashboard/>)
+  </script>
+
+  <template id="__bundler_thumbnail">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100" height="100" fill="#7E9A77"/>
+      <g fill="none" stroke="#FBF8F0" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="26" y="24" width="48" height="14" rx="5" fill="#FBF8F0" stroke="none"/>
+        <rect x="26" y="46" width="48" height="12" rx="5" stroke="#FBF8F0"/>
+        <rect x="26" y="64" width="48" height="12" rx="5" stroke="#FBF8F0"/>
+      </g>
+    </svg>
+  </template>
+</body>
+</html>

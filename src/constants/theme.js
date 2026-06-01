@@ -1,20 +1,23 @@
+// Editorial Calmo — tokens finales
 export const T = {
-  // Fondos — beige claro (nunca blanco puro)
-  bg: "#EDE5D4", bgCard: "#F5F0E6", bgMuted: "#E0D8C8",
-  // Textos — marrón orgánico
-  text: "#4A433E", textSub: "#7A6F65", textMuted: "#B0A79E",
+  // Fondos — papel cálido (nunca blanco puro)
+  bg: "#F1EBDE", bgCard: "#FBF8F0", bgMuted: "#ECE4D4",
+  // Texto — marrón orgánico
+  text: "#3B362F", textSub: "#857A6C", textMuted: "#B3A899",
   // Verde laurel (acento principal)
-  olive: "#8FA88B", oliveLt: "#D8EAD8", oliveDk: "#5C7A5E",
+  olive: "#7E9A77", oliveLt: "#E3EEDD", oliveDk: "#566F50",
   // Respuestas correctas — verde laurel
-  correct: "#8FA88B", correctBg: "#D8EAD8", correctBd: "#8FA88B",
-  // Respuestas incorrectas — rojo terracota
-  wrong: "#C86B58", wrongBg: "#F5E0DB", wrongBd: "#C86B58",
+  correct: "#566F50", correctBg: "#E3EEDD", correctBd: "#7E9A77",
+  // Respuestas incorrectas — terracota
+  wrong: "#C2664F", wrongBg: "#F4E3DD", wrongBd: "#C2664F",
   // Ocre arena — acentos y racha
-  streak: "#B89860", streakBg: "#F5ECD8",
-  accent: "#B89860", accentLt: "#F5ECD8", accentDk: "#8A6E3A",
+  streak: "#B08D4F", streakBg: "#F6ECD6",
+  accent: "#B08D4F", accentLt: "#F6ECD6", accentDk: "#8A6E3A",
   // Bordes
-  border: "#D5C9B5", borderDk: "#BFB09A",
-  // Tipografías Google Fonts
+  border: "#E4DACA", borderDk: "#D5C9B5", borderSoft: "#EFE8DA",
+  // Overlay / scrim para el menu
+  scrim: "rgba(48,43,37,.34)",
+  // Tipografias Google Fonts
   fontDisplay: "'Montserrat', sans-serif",
   fontBody: "'Inter', sans-serif",
 };
