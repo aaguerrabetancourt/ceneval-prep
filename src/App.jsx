@@ -781,8 +781,28 @@ const PLANS = [
   { id: 'monthly',   label: 'Mensual',    price: '$199', tag: null,          savings: null           },
 ]
 
-function PaywallScreen({ onUnlock, onBack }) {
-  const [sel, setSel] = useState('annual')
+function PaywallScreen({ onBack, userEmail }) {
+  const [sel,     setSel]     = useState('annual')
+  const [loading, setLoading] = useState(false)
+  const [error,   setError]   = useState(null)
+
+  async function handleCheckout() {
+    setLoading(true); setError(null)
+    try {
+      const res  = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ planId: sel, userEmail, origin: window.location.origin }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Error al crear sesión de pago')
+      window.location.href = data.url
+    } catch(e) {
+      setError(e.message)
+      setLoading(false)
+    }
+  }
+
   return (
     <Shell>
       <div style={{ padding: '36px 20px 32px', display: 'flex', flexDirection: 'column', gap: 22 }}>
@@ -801,7 +821,7 @@ function PaywallScreen({ onUnlock, onBack }) {
             'Preguntas ilimitadas en todas las areas',
             'Tutor IA sin restricciones',
             'Historial completo de progreso',
-            'Acceso a los 3 examenes CENEVAL',
+            'Acceso a los 4 examenes CENEVAL',
           ].map(b => (
             <div key={b} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <IconCheck size={15} stroke={T.oliveDk}/>
@@ -833,8 +853,16 @@ function PaywallScreen({ onUnlock, onBack }) {
           ))}
         </div>
 
-        <Btn onClick={() => onUnlock(sel)} style={{ width: '100%' }}>Suscribirme ahora</Btn>
+        {error && <p style={{ fontSize: 13, color: T.wrong, textAlign: 'center' }}>{error}</p>}
+
+        <Btn onClick={handleCheckout} disabled={loading} style={{ width: '100%' }}>
+          {loading ? 'Redirigiendo a pago...' : 'Suscribirme ahora'}
+        </Btn>
         <Btn onClick={onBack} variant="ghost" style={{ width: '100%' }}>Volver</Btn>
+
+        <p style={{ fontSize: 11, color: T.textMuted, textAlign: 'center', lineHeight: 1.5 }}>
+          Pago seguro procesado por Stripe. Cancela cuando quieras.
+        </p>
       </div>
     </Shell>
   )
@@ -921,7 +949,16 @@ export default function App() {
   const [answers,     setAnswers]     = useState([])
   const [progress,    setProgress]    = useState(() => load('cp_progress', {}))
   const [freeUsed,    setFreeUsed]    = useState(() => load('cp_free', {}))
-  const [isPremium,   setIsPremium]   = useState(() => load('cp_premium', false))
+  const [isPremium,   setIsPremium]   = useState(() => {
+    // Detectar regreso exitoso de Stripe
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('payment') === 'success') {
+      save('cp_premium', true)
+      window.history.replaceState({}, '', window.location.pathname)
+      return true
+    }
+    return load('cp_premium', false)
+  })
   const [streak,      setStreak]      = useState(() => { const s = load('cp_streak', { count: 0, date: '' }); return s.count })
   const [dailyGoal,   setDailyGoal]   = useState(() => load('cp_goal', 10))
   const [remindersOn, setRemindersOn] = useState(() => load('cp_reminders', false))
@@ -1059,7 +1096,7 @@ export default function App() {
       )}
 
       {screen === 'paywall' && (
-        <PaywallScreen onUnlock={unlock} onBack={() => setScreen('home')}/>
+        <PaywallScreen onBack={() => setScreen('home')} userEmail={appUser?.email}/>
       )}
 
       {screen === 'progress' && (
