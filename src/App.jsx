@@ -1039,55 +1039,243 @@ function ExamResultScreen({ area, exam, result, questions, onRetry, onHistory, o
 
 // ── Screen: Exam History ──────────────────────────────────────────────────────
 function ExamHistoryScreen({ history, onBack }) {
-  const sorted = [...history].sort((a, b) => b.timestamp - a.timestamp)
+  const [activeTab, setActiveTab] = useState('all')
 
-  return (
+  if (history.length === 0) return (
     <Shell>
-      <div style={{ padding: '20px 20px 0', display: 'flex', alignItems: 'center', gap: 12, borderBottom: `1px solid ${T.borderSoft}`, paddingBottom: 14 }}>
+      <div style={{ padding: '20px 20px 14px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: `1px solid ${T.borderSoft}` }}>
         <button onClick={onBack} style={{ width: 38, height: 38, borderRadius: 11, border: `1px solid ${T.border}`, background: T.bgCard, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
           <IconArrowLeft size={18} stroke={T.textSub}/>
         </button>
         <h2 style={{ fontFamily: T.fontDisplay, fontSize: 20, fontWeight: 800 }}>Historial de exámenes</h2>
       </div>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 24px', textAlign: 'center' }}>
+        <div style={{ width: 56, height: 56, borderRadius: 16, background: T.bgMuted, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
+          <IconChart size={26} stroke={T.textMuted}/>
+        </div>
+        <p style={{ fontSize: 15, fontWeight: 700, color: T.text }}>Sin exámenes aún</p>
+        <p style={{ fontSize: 13, color: T.textSub, marginTop: 6, lineHeight: 1.6 }}>Completa tu primer examen de prueba para ver tu progreso aquí.</p>
+      </div>
+    </Shell>
+  )
+
+  // Agrupar por examen
+  const examGroups = EXAMS.map(ex => ({
+    exam: ex,
+    attempts: [...history]
+      .filter(h => h.examId === ex.id)
+      .sort((a, b) => a.timestamp - b.timestamp),
+  })).filter(g => g.attempts.length > 0)
+
+  const allSorted = [...history].sort((a, b) => b.timestamp - a.timestamp)
+
+  // Mini sparkline
+  function Sparkline({ attempts, color }) {
+    if (attempts.length < 2) return null
+    const h = 36, w = Math.min(attempts.length * 18, 100)
+    const maxPct = 100
+    return (
+      <svg width={w} height={h} style={{ display: 'block', overflow: 'visible' }}>
+        {attempts.map((a, i) => {
+          const x = (i / (attempts.length - 1)) * (w - 8) + 4
+          const y = h - (a.pct / maxPct) * (h - 8) - 4
+          return (
+            <g key={a.id}>
+              {i > 0 && (
+                <line
+                  x1={(( i - 1) / (attempts.length - 1)) * (w - 8) + 4}
+                  y1={h - (attempts[i-1].pct / maxPct) * (h - 8) - 4}
+                  x2={x} y2={y}
+                  stroke={color} strokeWidth={1.5} strokeLinecap="round"
+                />
+              )}
+              <circle cx={x} cy={y} r={3} fill={color}/>
+            </g>
+          )
+        })}
+      </svg>
+    )
+  }
+
+  // Tendencia
+  function trend(attempts) {
+    if (attempts.length < 2) return null
+    const diff = attempts[attempts.length - 1].pct - attempts[0].pct
+    if (diff > 0)  return { label: `+${diff}%`, color: T.olive,  arrow: '↑' }
+    if (diff < 0)  return { label: `${diff}%`,  color: T.wrong,  arrow: '↓' }
+    return { label: '=', color: T.textMuted, arrow: '→' }
+  }
+
+  const tabs = [{ id: 'all', label: 'Todos' }, ...examGroups.map(g => ({ id: g.exam.id, label: g.exam.name }))]
+
+  return (
+    <Shell>
+      {/* Header */}
+      <div style={{ padding: '20px 20px 0', borderBottom: `1px solid ${T.borderSoft}` }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+          <button onClick={onBack} style={{ width: 38, height: 38, borderRadius: 11, border: `1px solid ${T.border}`, background: T.bgCard, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+            <IconArrowLeft size={18} stroke={T.textSub}/>
+          </button>
+          <h2 style={{ fontFamily: T.fontDisplay, fontSize: 20, fontWeight: 800 }}>Historial de exámenes</h2>
+        </div>
+        {/* Tabs */}
+        <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 12 }}>
+          {tabs.map(t => (
+            <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
+              padding: '6px 14px', borderRadius: 999, border: 'none', cursor: 'pointer', flexShrink: 0,
+              background: activeTab === t.id ? T.text : T.bgMuted,
+              color: activeTab === t.id ? '#fff' : T.textSub,
+              fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 12,
+            }}>{t.label}</button>
+          ))}
+        </div>
+      </div>
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '16px 16px 24px' }}>
-        {sorted.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '48px 24px' }}>
-            <div style={{ width: 56, height: 56, borderRadius: 16, background: T.bgMuted, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
-              <IconChart size={26} stroke={T.textMuted}/>
-            </div>
-            <p style={{ fontSize: 15, fontWeight: 700, color: T.text }}>Sin exámenes aún</p>
-            <p style={{ fontSize: 13, color: T.textSub, marginTop: 6 }}>Completa tu primer examen para ver tu historial aquí.</p>
-          </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {sorted.map(h => {
-              const passed = h.pct >= 70
-              const Icon   = ICONS[h.areaId]
-              const exam   = EXAMS.find(e => e.id === h.examId)
+
+        {/* Vista: todos — resumen por examen */}
+        {activeTab === 'all' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {examGroups.map(({ exam, attempts }) => {
+              const t = trend(attempts)
+              const last = attempts[attempts.length - 1]
+              const ExIcon = ICONS[exam.id]
               return (
-                <div key={h.id} style={{ background: T.bgCard, border: `1px solid ${T.border}`, borderRadius: 14, padding: '14px 16px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ width: 38, height: 38, borderRadius: 10, background: exam?.tint || T.bgMuted, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      {Icon && <Icon size={19} stroke={exam?.color || T.textSub} sw={1.6}/>}
+                <div key={exam.id} style={{ background: T.bgCard, border: `1px solid ${T.border}`, borderRadius: 16, padding: '16px 16px 12px', boxShadow: '0 1px 2px rgba(74,67,62,.04)' }}>
+                  {/* Cabecera */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                    <div style={{ width: 38, height: 38, borderRadius: 10, background: exam.tint, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      {ExIcon && <ExIcon size={19} stroke={exam.color} sw={1.6}/>}
                     </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontSize: 13.5, fontWeight: 700, color: T.text }}>{h.areaName}</p>
-                      <p style={{ fontSize: 11, color: T.textSub, marginTop: 1 }}>{h.examName} · {h.date}</p>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontFamily: T.fontDisplay, fontSize: 14, fontWeight: 800, color: T.text }}>{exam.name}</p>
+                      <p style={{ fontSize: 11, color: T.textSub }}>{attempts.length} intento{attempts.length !== 1 ? 's' : ''}</p>
                     </div>
-                    <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                      <p style={{ fontFamily: T.fontDisplay, fontSize: 20, fontWeight: 800, color: passed ? T.oliveDk : T.wrong }}>{h.pct}%</p>
-                      <p style={{ fontSize: 10.5, color: T.textSub, marginTop: 1 }}>{h.correct}/{h.total}</p>
-                    </div>
+                    {t && (
+                      <span style={{ fontSize: 13, fontWeight: 800, color: t.color }}>
+                        {t.arrow} {t.label}
+                      </span>
+                    )}
                   </div>
-                  <div style={{ marginTop: 10, height: 5, borderRadius: 5, background: T.bgMuted, overflow: 'hidden' }}>
-                    <div style={{ height: '100%', width: `${h.pct}%`, background: passed ? T.olive : T.wrong, borderRadius: 5, transition: 'width .5s' }}/>
+
+                  {/* Tabla de intentos */}
+                  <div style={{ background: T.bg, borderRadius: 12, overflow: 'hidden' }}>
+                    {/* Encabezado tabla */}
+                    <div style={{ display: 'flex', padding: '7px 12px', borderBottom: `1px solid ${T.border}` }}>
+                      <span style={{ flex: 1, fontSize: 10, fontWeight: 700, color: T.textMuted, textTransform: 'uppercase', letterSpacing: '.1em' }}>Fecha</span>
+                      <span style={{ width: 80, fontSize: 10, fontWeight: 700, color: T.textMuted, textTransform: 'uppercase', letterSpacing: '.1em' }}>Resultado</span>
+                      <span style={{ width: 44, fontSize: 10, fontWeight: 700, color: T.textMuted, textTransform: 'uppercase', letterSpacing: '.1em', textAlign: 'right' }}>%</span>
+                    </div>
+                    {/* Filas */}
+                    {[...attempts].reverse().map((a, i) => {
+                      const prev     = attempts[attempts.length - 1 - i - 1]
+                      const delta    = prev ? a.pct - prev.pct : null
+                      const isLast   = i === 0
+                      return (
+                        <div key={a.id} style={{ display: 'flex', alignItems: 'center', padding: '9px 12px', borderBottom: i < attempts.length - 1 ? `1px solid ${T.borderSoft}` : 'none', background: isLast ? exam.tint : 'transparent' }}>
+                          <span style={{ flex: 1, fontSize: 12, color: T.textSub }}>{a.date}</span>
+                          <div style={{ width: 80, height: 6, borderRadius: 6, background: T.bgMuted, overflow: 'hidden' }}>
+                            <div style={{ height: '100%', width: `${a.pct}%`, background: a.pct >= 70 ? T.olive : T.wrong, borderRadius: 6 }}/>
+                          </div>
+                          <div style={{ width: 44, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4 }}>
+                            {delta !== null && delta !== 0 && (
+                              <span style={{ fontSize: 9, color: delta > 0 ? T.olive : T.wrong, fontWeight: 700 }}>
+                                {delta > 0 ? '↑' : '↓'}
+                              </span>
+                            )}
+                            <span style={{ fontFamily: T.fontDisplay, fontSize: 13, fontWeight: 800, color: a.pct >= 70 ? T.oliveDk : T.wrong }}>{a.pct}%</span>
+                          </div>
+                        </div>
+                      )
+                    })}
                   </div>
+
+                  {/* Sparkline tendencia */}
+                  {attempts.length >= 2 && (
+                    <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <span style={{ fontSize: 10.5, color: T.textMuted }}>Tendencia</span>
+                      <Sparkline attempts={attempts} color={exam.color}/>
+                      <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
+                        <p style={{ fontSize: 10.5, color: T.textSub }}>Mejor: <strong style={{ color: exam.color }}>{Math.max(...attempts.map(a => a.pct))}%</strong></p>
+                        <p style={{ fontSize: 10.5, color: T.textSub }}>Último: <strong style={{ color: last.pct >= 70 ? T.oliveDk : T.wrong }}>{last.pct}%</strong></p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )
             })}
           </div>
         )}
+
+        {/* Vista: por examen específico */}
+        {activeTab !== 'all' && (() => {
+          const g = examGroups.find(g => g.exam.id === activeTab)
+          if (!g) return null
+          const { exam, attempts } = g
+          const t = trend(attempts)
+          return (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {/* Resumen */}
+              <div style={{ display: 'flex', gap: 8 }}>
+                {[
+                  { l: 'Intentos',  v: attempts.length },
+                  { l: 'Mejor',     v: `${Math.max(...attempts.map(a => a.pct))}%`, c: T.oliveDk },
+                  { l: 'Promedio',  v: `${Math.round(attempts.reduce((s,a) => s + a.pct, 0) / attempts.length)}%`, c: T.accent },
+                  { l: 'Tendencia', v: t ? `${t.arrow}${t.label}` : '—', c: t?.color || T.textMuted },
+                ].map(s => (
+                  <div key={s.l} style={{ flex: 1, background: T.bgCard, border: `1px solid ${T.border}`, borderRadius: 12, padding: '10px 6px', textAlign: 'center' }}>
+                    <p style={{ fontFamily: T.fontDisplay, fontSize: 16, fontWeight: 800, color: s.c || T.text }}>{s.v}</p>
+                    <p style={{ fontSize: 9.5, color: T.textMuted, marginTop: 2 }}>{s.l}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Tabla detallada */}
+              <div style={{ background: T.bgCard, border: `1px solid ${T.border}`, borderRadius: 14, overflow: 'hidden' }}>
+                <div style={{ display: 'flex', padding: '8px 14px', background: T.bgMuted, borderBottom: `1px solid ${T.border}` }}>
+                  <span style={{ flex: 1, fontSize: 10, fontWeight: 700, color: T.textMuted, textTransform: 'uppercase', letterSpacing: '.1em' }}>Fecha</span>
+                  <span style={{ width: 70, fontSize: 10, fontWeight: 700, color: T.textMuted, textTransform: 'uppercase', letterSpacing: '.1em', textAlign: 'center' }}>Correctas</span>
+                  <span style={{ width: 50, fontSize: 10, fontWeight: 700, color: T.textMuted, textTransform: 'uppercase', letterSpacing: '.1em', textAlign: 'right' }}>Cal.</span>
+                </div>
+                {[...attempts].reverse().map((a, i) => {
+                  const prev  = i < attempts.length - 1 ? [...attempts].reverse()[i + 1] : null
+                  const delta = prev ? a.pct - prev.pct : null
+                  return (
+                    <div key={a.id} style={{ display: 'flex', alignItems: 'center', padding: '11px 14px', borderBottom: i < attempts.length - 1 ? `1px solid ${T.borderSoft}` : 'none' }}>
+                      <span style={{ flex: 1, fontSize: 13, color: T.text }}>{a.date}</span>
+                      <span style={{ width: 70, fontSize: 12, color: T.textSub, textAlign: 'center' }}>{a.correct}/{a.total}</span>
+                      <div style={{ width: 50, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4 }}>
+                        {delta !== null && delta !== 0 && (
+                          <span style={{ fontSize: 10, color: delta > 0 ? T.olive : T.wrong, fontWeight: 800 }}>{delta > 0 ? '↑' : '↓'}</span>
+                        )}
+                        <span style={{ fontFamily: T.fontDisplay, fontSize: 15, fontWeight: 800, color: a.pct >= 70 ? T.oliveDk : T.wrong }}>{a.pct}%</span>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Sparkline */}
+              {attempts.length >= 2 && (
+                <div style={{ background: T.bgCard, border: `1px solid ${T.border}`, borderRadius: 14, padding: '14px 16px' }}>
+                  <p style={{ fontSize: 12, fontWeight: 700, color: T.textSub, marginBottom: 10 }}>Evolución de resultados</p>
+                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 60 }}>
+                    {attempts.map((a, i) => (
+                      <div key={a.id} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                        <span style={{ fontSize: 9, fontWeight: 700, color: a.pct >= 70 ? T.olive : T.wrong }}>{a.pct}%</span>
+                        <div style={{ width: '100%', background: T.bgMuted, borderRadius: 4, overflow: 'hidden', height: 36 }}>
+                          <div style={{ width: '100%', height: `${a.pct}%`, background: a.pct >= 70 ? T.olive : T.wrong, borderRadius: 4, marginTop: `${100 - a.pct}%` }}/>
+                        </div>
+                        <span style={{ fontSize: 8, color: T.textMuted }}>{i + 1}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p style={{ fontSize: 10.5, color: T.textMuted, marginTop: 6, textAlign: 'center' }}>intento #</p>
+                </div>
+              )}
+            </div>
+          )
+        })()}
       </div>
     </Shell>
   )
