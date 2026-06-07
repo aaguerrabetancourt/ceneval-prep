@@ -534,7 +534,7 @@ function HomeScreen({
               const st     = areaStats(a.id, progress)
               const used   = freeUsed[a.id] || 0
               const locked = used >= FREE_LIMIT && !isPremium
-              const free   = !locked && used < FREE_LIMIT
+              const free   = !isPremium && !locked && used < FREE_LIMIT
               return (
                 <div key={a.id} onClick={() => onArea(a)}
                   style={{
