@@ -238,48 +238,7 @@ function DropdownMenu({
         }}>
           <div style={{ overflowY: 'auto', padding: '16px 14px' }}>
 
-            {/* Seccion: EXAMEN */}
-            <div style={{ padding: '0 4px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Eyebrow>Examen</Eyebrow>
-              <span style={{ fontSize: 10.5, color: T.textMuted }}>3 disponibles</span>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {EXAMS.map(ex => {
-                const Icon   = ICONS[ex.id]
-                const sc2    = examScore(ex, progress)
-                const active = ex.id === activeId
-                return (
-                  <button key={ex.id} onClick={() => { setActiveId(ex.id); onClose() }}
-                    style={{
-                      width: '100%', textAlign: 'left', cursor: 'pointer',
-                      display: 'flex', alignItems: 'center', gap: 12,
-                      padding: '11px 12px', borderRadius: 14,
-                      background: active ? T.oliveLt : 'transparent',
-                      border: `1.5px solid ${active ? T.olive : 'transparent'}`,
-                    }}>
-                    <div style={{
-                      width: 38, height: 38, borderRadius: 11,
-                      background: active ? '#fff' : T.bgMuted,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                    }}>
-                      <Icon size={20} stroke={active ? T.oliveDk : T.textSub} sw={1.6}/>
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontFamily: T.fontDisplay, fontSize: 14, fontWeight: 700, color: active ? T.oliveDk : T.text, letterSpacing: '-.01em' }}>{ex.name}</p>
-                      <p style={{ fontSize: 11, color: T.textSub, marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ex.short}</p>
-                    </div>
-                    {active
-                      ? <span style={{ width: 22, height: 22, borderRadius: '50%', background: T.olive, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                          <IconCheck size={13} stroke="#fff"/>
-                        </span>
-                      : <span style={{ fontFamily: T.fontDisplay, fontSize: 13, fontWeight: 700, color: T.textMuted }}>{sc2.pct}%</span>
-                    }
-                  </button>
-                )
-              })}
-            </div>
-
-            <div style={{ height: 1, background: T.borderSoft, margin: '14px 4px' }}/>
+            <div style={{ height: 1, background: T.borderSoft, margin: '4px 4px 14px' }}/>
 
             {/* Seccion: PUNTUACION */}
             <div style={{ padding: '0 4px 10px', display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -399,7 +358,8 @@ function HomeScreen({
   freeUsed, isPremium, onArea, onProgress, onLogout, onPlans,
   dailyGoal, setDailyGoal, remindersOn, setRemindersOn, tutorOn, setTutorOn,
 }) {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen,       setMenuOpen]       = useState(false)
+  const [examPickerOpen, setExamPickerOpen] = useState(false)
 
   const activeExam  = EXAMS.find(e => e.id === activeExamId) || EXAMS[0]
   const ActiveIcon  = ICONS[activeExam.id]
@@ -453,24 +413,55 @@ function HomeScreen({
             </button>
           </div>
         </div>
-        {/* Fila inferior: examen activo (solo muestra info, no abre menu) */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 10,
-          padding: '8px 12px', borderRadius: 12,
-          background: T.bgCard, border: `1px solid ${T.border}`,
-        }}>
+        {/* Fila inferior: examen activo — tap para cambiar examen */}
+        <button
+          onClick={() => setExamPickerOpen(v => !v)}
+          style={{
+            width: '100%', display: 'flex', alignItems: 'center', gap: 10,
+            padding: '8px 12px', borderRadius: 12,
+            background: T.bgCard, border: `1px solid ${T.border}`,
+            cursor: 'pointer',
+          }}>
           <div style={{
             width: 30, height: 30, borderRadius: 8, background: activeExam.tint,
             display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
           }}>
             <ActiveIcon size={16} stroke={activeExam.color} sw={1.6}/>
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <Eyebrow color={T.accent}>Estudiando</Eyebrow>
+          <div style={{ flex: 1, textAlign: 'left', minWidth: 0 }}>
+            <Eyebrow color={T.accent}>Estudiando · toca para cambiar</Eyebrow>
             <p style={{ fontFamily: T.fontDisplay, fontSize: 13, fontWeight: 800, color: T.text, letterSpacing: '-.01em', marginTop: 1 }}>{activeExam.name}</p>
           </div>
-          <span style={{ fontSize: 11, color: T.textMuted }}>Cambiar en ☰</span>
-        </div>
+          <span style={{ display: 'flex', color: T.textMuted, transform: examPickerOpen ? 'rotate(180deg)' : 'none', transition: 'transform .2s' }}>
+            <IconChevron size={16} stroke={T.textMuted}/>
+          </span>
+        </button>
+
+        {/* Mini picker de examen */}
+        {examPickerOpen && (
+          <div style={{ marginTop: 8, background: T.bgCard, border: `1px solid ${T.border}`, borderRadius: 14, overflow: 'hidden' }}>
+            {EXAMS.map(ex => {
+              const ExIcon = ICONS[ex.id]
+              const active = ex.id === activeExamId
+              return (
+                <button key={ex.id} onClick={() => { setActiveExamId(ex.id); setExamPickerOpen(false) }} style={{
+                  width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '11px 14px',
+                  background: active ? ex.tint : 'transparent',
+                  border: 'none', borderBottom: `1px solid ${T.borderSoft}`, cursor: 'pointer',
+                }}>
+                  <div style={{ width: 30, height: 30, borderRadius: 8, background: active ? '#fff' : T.bgMuted, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <ExIcon size={16} stroke={active ? ex.color : T.textSub} sw={1.6}/>
+                  </div>
+                  <div style={{ flex: 1, textAlign: 'left' }}>
+                    <p style={{ fontFamily: T.fontDisplay, fontSize: 13, fontWeight: 700, color: active ? ex.color : T.text }}>{ex.name}</p>
+                    <p style={{ fontSize: 11, color: T.textSub, marginTop: 1 }}>{ex.short}</p>
+                  </div>
+                  {active && <IconCheck size={14} stroke={ex.color}/>}
+                </button>
+              )
+            })}
+          </div>
+        )}
       </div>
 
       {/* Contenido scrolleable (blur cuando menu abierto) */}
