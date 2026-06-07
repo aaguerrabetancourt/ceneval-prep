@@ -6,7 +6,7 @@ import { QUESTIONS } from './data/questions'
 import {
   IconFlame, IconChart, IconCheck, IconX, IconArrowRight, IconArrowLeft,
   IconSpark, IconLock, IconChevron, IconBell, IconSliders, IconLogout,
-  IconTarget, ICONS,
+  IconMenu, IconTarget, ICONS,
 } from './icons'
 
 const FREE_LIMIT = 3
@@ -426,41 +426,50 @@ function HomeScreen({
         onLogout={onLogout} onPlans={onPlans} isPremium={isPremium}
       />
 
-      {/* Header switcher */}
-      <div style={{ padding: '12px 16px 0', zIndex: 10, position: 'relative' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          {/* Boton switcher */}
-          <button
-            onClick={() => setMenuOpen(v => !v)}
-            style={{
-              flex: 1, display: 'flex', alignItems: 'center', gap: 10,
-              padding: '10px 12px', borderRadius: 15,
-              background: T.bgCard, border: `1px solid ${T.border}`,
-              boxShadow: '0 1px 2px rgba(74,67,62,.04)',
-              cursor: 'pointer', minHeight: 44,
-            }}>
+      {/* Header */}
+      <div style={{ padding: '14px 16px 12px', zIndex: 10, position: 'relative', borderBottom: `1px solid ${T.borderSoft}` }}>
+        {/* Fila superior: Logo + racha + hamburguesa */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+          <LogoMini height={20} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            {/* Racha */}
             <div style={{
-              width: 34, height: 34, borderRadius: 10, background: activeExam.tint,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              display: 'flex', alignItems: 'center', gap: 5, padding: '6px 10px',
+              borderRadius: 999, background: T.streakBg, border: `1px solid ${T.border}`,
             }}>
-              <ActiveIcon size={18} stroke={activeExam.color} sw={1.6}/>
+              <IconFlame size={14} stroke={T.streak} fill="#F2DFB4" sw={1.5}/>
+              <span style={{ fontSize: 13, fontWeight: 800, color: T.streak }}>{streak}</span>
             </div>
-            <div style={{ flex: 1, textAlign: 'left', minWidth: 0 }}>
-              <Eyebrow color={T.accent}>Estudiando</Eyebrow>
-              <p style={{ fontFamily: T.fontDisplay, fontSize: 14, fontWeight: 800, color: T.text, letterSpacing: '-.01em', marginTop: 1 }}>{activeExam.name}</p>
-            </div>
-            <span style={{ color: T.textMuted, transform: menuOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform .25s', display: 'flex' }}>
-              <IconChevron size={18} stroke={T.textMuted}/>
-            </span>
-          </button>
-          {/* Racha */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 5, padding: '8px 12px',
-            borderRadius: 999, background: T.streakBg, border: `1px solid ${T.border}`, flexShrink: 0,
-          }}>
-            <IconFlame size={15} stroke={T.streak} fill="#F2DFB4" sw={1.5}/>
-            <span style={{ fontSize: 13, fontWeight: 800, color: T.streak }}>{streak}</span>
+            {/* Hamburguesa */}
+            <button
+              onClick={() => setMenuOpen(v => !v)}
+              style={{
+                width: 38, height: 38, borderRadius: 11, border: `1px solid ${T.border}`,
+                background: menuOpen ? T.bgMuted : T.bgCard,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', flexShrink: 0,
+              }}>
+              <IconMenu size={18} stroke={T.text} sw={1.7}/>
+            </button>
           </div>
+        </div>
+        {/* Fila inferior: examen activo (solo muestra info, no abre menu) */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 10,
+          padding: '8px 12px', borderRadius: 12,
+          background: T.bgCard, border: `1px solid ${T.border}`,
+        }}>
+          <div style={{
+            width: 30, height: 30, borderRadius: 8, background: activeExam.tint,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+          }}>
+            <ActiveIcon size={16} stroke={activeExam.color} sw={1.6}/>
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <Eyebrow color={T.accent}>Estudiando</Eyebrow>
+            <p style={{ fontFamily: T.fontDisplay, fontSize: 13, fontWeight: 800, color: T.text, letterSpacing: '-.01em', marginTop: 1 }}>{activeExam.name}</p>
+          </div>
+          <span style={{ fontSize: 11, color: T.textMuted }}>Cambiar en ☰</span>
         </div>
       </div>
 

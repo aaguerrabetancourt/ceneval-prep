@@ -126,6 +126,11 @@ export const IconArrowLeft = (p) => ic(() => (<><path d="M19 12H5M11 6 5 12l6 6"
 export const IconArrowRight = (p) => ic(() => (<><path d="M5 12h14M13 6l6 6-6 6" /></>), p)
 export const IconClock = (p) => ic((fill) => (<><circle cx="12" cy="12" r="8" fill={fill} /><path d="M12 7.5V12l3 1.8" /></>), p)
 
+// Hamburger menu
+export const IconMenu = (p) => ic(() => (<>
+  <path d="M4 7h16M4 12h16M4 17h16" />
+</>), p)
+
 // Menu / ajustes
 export const IconChevron = (p) => ic(() => (<path d="m6 9.5 6 6 6-6" />), p)
 export const IconBell = (p) => ic((fill) => (<>
