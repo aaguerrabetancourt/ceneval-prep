@@ -731,6 +731,356 @@ function QuestionScreen({ area, exam, qIndex, questions, streak, aiKey, onAnswer
   )
 }
 
+// ── Screen: Mode Selector ─────────────────────────────────────────────────────
+function ModeSelectorScreen({ area, exam, onPractice, onExam, onBack }) {
+  const Icon = ICONS[area.id]
+  return (
+    <Shell>
+      <div style={{ padding: '20px 20px 0', display: 'flex', alignItems: 'center', gap: 12 }}>
+        <button onClick={onBack} style={{ width: 38, height: 38, borderRadius: 11, border: `1px solid ${T.border}`, background: T.bgCard, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+          <IconArrowLeft size={18} stroke={T.textSub}/>
+        </button>
+        <LogoMini height={22} style={{ opacity: .85 }}/>
+      </div>
+
+      <div style={{ padding: '32px 22px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {/* Área */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+          <div style={{ width: 42, height: 42, borderRadius: 12, background: exam.tint, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            {Icon && <Icon size={22} stroke={exam.color} sw={1.6}/>}
+          </div>
+          <div>
+            <p style={{ fontFamily: T.fontDisplay, fontSize: 17, fontWeight: 800, color: T.text }}>{area.name}</p>
+            <p style={{ fontSize: 12, color: T.textSub, marginTop: 2 }}>{exam.name}</p>
+          </div>
+        </div>
+
+        <p style={{ fontSize: 13, color: T.textSub, marginBottom: 10, lineHeight: 1.6 }}>
+          ¿Cómo quieres practicar esta área?
+        </p>
+
+        {/* Opción Práctica */}
+        <button onClick={onPractice} style={{
+          width: '100%', padding: '20px 18px', borderRadius: 16, cursor: 'pointer', textAlign: 'left',
+          background: T.bgCard, border: `1.5px solid ${T.border}`,
+          display: 'flex', gap: 14, alignItems: 'flex-start',
+          boxShadow: '0 1px 2px rgba(74,67,62,.04)',
+        }}>
+          <div style={{ width: 44, height: 44, borderRadius: 12, background: T.oliveLt, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <IconSpark size={22} stroke={T.oliveDk} fill={T.oliveLt} sw={1.6}/>
+          </div>
+          <div>
+            <p style={{ fontFamily: T.fontDisplay, fontSize: 16, fontWeight: 800, color: T.text }}>Modo Práctica</p>
+            <p style={{ fontSize: 13, color: T.textSub, marginTop: 4, lineHeight: 1.5 }}>
+              Retroalimentación inmediata, explicaciones y Tutor IA después de cada pregunta.
+            </p>
+          </div>
+        </button>
+
+        {/* Opción Examen */}
+        <button onClick={onExam} style={{
+          width: '100%', padding: '20px 18px', borderRadius: 16, cursor: 'pointer', textAlign: 'left',
+          background: T.bgCard, border: `1.5px solid ${T.border}`,
+          display: 'flex', gap: 14, alignItems: 'flex-start',
+          boxShadow: '0 1px 2px rgba(74,67,62,.04)',
+        }}>
+          <div style={{ width: 44, height: 44, borderRadius: 12, background: T.streakBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <IconChart size={22} stroke={T.accent} sw={1.6}/>
+          </div>
+          <div>
+            <p style={{ fontFamily: T.fontDisplay, fontSize: 16, fontWeight: 800, color: T.text }}>Modo Examen</p>
+            <p style={{ fontSize: 13, color: T.textSub, marginTop: 4, lineHeight: 1.5 }}>
+              Sin retroalimentación durante el examen. Calificación final guardada en tu historial.
+            </p>
+          </div>
+        </button>
+      </div>
+    </Shell>
+  )
+}
+
+// ── Screen: Exam Question (sin retroalimentación) ─────────────────────────────
+function ExamQuestionScreen({ area, exam, questions, onFinish, onQuit }) {
+  const [current,   setCurrent]   = useState(0)
+  const [selected,  setSelected]  = useState(() => Array(questions.length).fill(null))
+  const [showConfirm, setShowConfirm] = useState(false)
+
+  const q        = questions[current]
+  const answered = selected.filter(s => s !== null).length
+  const Icon     = ICONS[area.id]
+
+  function choose(idx) {
+    setSelected(prev => { const n = [...prev]; n[current] = idx; return n })
+  }
+
+  function finish() {
+    const correct = selected.filter((s, i) => s === questions[i].ans).length
+    onFinish({ selected, correct, total: questions.length })
+  }
+
+  if (!q) return null
+
+  return (
+    <Shell>
+      {/* Top bar */}
+      <div style={{ padding: '14px 18px 10px', display: 'flex', alignItems: 'center', gap: 10 }}>
+        <button onClick={() => setShowConfirm(true)} style={{ background: 'none', border: 'none', color: T.textMuted, cursor: 'pointer', display: 'flex' }}>
+          <IconX size={20} stroke={T.textMuted}/>
+        </button>
+        <div style={{ flex: 1, height: 5, borderRadius: 5, background: T.bgMuted, overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${((current + 1) / questions.length) * 100}%`, background: exam.color, borderRadius: 5, transition: 'width .3s' }}/>
+        </div>
+        <span style={{ fontSize: 12, fontWeight: 700, color: T.textSub, flexShrink: 0 }}>{current + 1}/{questions.length}</span>
+      </div>
+
+      {/* Eyebrow */}
+      <div style={{ padding: '2px 18px 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+        {Icon && <Icon size={14} stroke={exam.color} sw={1.7}/>}
+        <Eyebrow color={exam.color}>{area.name}</Eyebrow>
+      </div>
+
+      {/* Pregunta */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '0 18px 16px' }}>
+        <p style={{ fontFamily: T.fontDisplay, fontSize: 17, fontWeight: 600, lineHeight: 1.55, letterSpacing: '-.01em', color: T.text, marginBottom: 20 }}>
+          {q.q}
+        </p>
+
+        {/* Opciones */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {q.opts.map((opt, idx) => {
+            const isSelected = selected[current] === idx
+            return (
+              <button key={idx} onClick={() => choose(idx)} style={{
+                width: '100%', display: 'flex', alignItems: 'center', gap: 12,
+                padding: '13px 15px', borderRadius: 13, textAlign: 'left', cursor: 'pointer',
+                background: isSelected ? T.oliveLt : T.bgCard,
+                border: `1.5px solid ${isSelected ? T.olive : T.border}`,
+                transition: 'all .15s',
+              }}>
+                <span style={{
+                  width: 26, height: 26, borderRadius: 8, flexShrink: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: isSelected ? T.olive : T.bgMuted,
+                  color: isSelected ? '#fff' : T.textSub,
+                  fontSize: 12, fontWeight: 800, fontFamily: T.fontDisplay,
+                }}>
+                  {['A','B','C','D'][idx]}
+                </span>
+                <span style={{ fontSize: 14, fontWeight: 500, color: T.text, lineHeight: 1.45 }}>{opt}</span>
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Indicador de respondidas */}
+        <div style={{ marginTop: 20, padding: '10px 14px', borderRadius: 12, background: T.bgMuted, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: 12, color: T.textSub }}>{answered} de {questions.length} respondidas</span>
+          {answered < questions.length && <span style={{ fontSize: 11, color: T.textMuted }}>{questions.length - answered} sin responder</span>}
+        </div>
+      </div>
+
+      {/* Navegación */}
+      <div style={{ padding: '8px 18px 24px', display: 'flex', gap: 10 }}>
+        {current > 0 && (
+          <button onClick={() => setCurrent(c => c - 1)} style={{
+            flex: 1, padding: '13px', borderRadius: 13, border: `1.5px solid ${T.border}`,
+            background: 'transparent', color: T.textSub, fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 13, cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+          }}>
+            <IconArrowLeft size={16} stroke={T.textSub}/> Anterior
+          </button>
+        )}
+        {current < questions.length - 1 ? (
+          <button onClick={() => setCurrent(c => c + 1)} style={{
+            flex: 1, padding: '13px', borderRadius: 13, border: 'none',
+            background: T.olive, color: '#fff', fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 13, cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+          }}>
+            Siguiente <IconArrowRight size={16} stroke="#fff"/>
+          </button>
+        ) : (
+          <button onClick={() => setShowConfirm(true)} style={{
+            flex: 1, padding: '13px', borderRadius: 13, border: 'none',
+            background: T.accent, color: '#fff', fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 14, cursor: 'pointer',
+          }}>
+            Terminar examen
+          </button>
+        )}
+      </div>
+
+      {/* Confirmación */}
+      {showConfirm && (
+        <div style={{ position: 'absolute', inset: 0, background: T.scrim, display: 'flex', alignItems: 'flex-end', zIndex: 50 }}>
+          <div style={{ width: '100%', background: T.bgCard, borderRadius: '20px 20px 0 0', padding: '28px 22px 36px' }}>
+            <p style={{ fontFamily: T.fontDisplay, fontSize: 18, fontWeight: 800, marginBottom: 8 }}>
+              {answered < questions.length ? '¿Terminar sin contestar todo?' : '¿Enviar examen?'}
+            </p>
+            <p style={{ fontSize: 13, color: T.textSub, marginBottom: 22, lineHeight: 1.6 }}>
+              {answered < questions.length
+                ? `Tienes ${questions.length - answered} pregunta(s) sin responder. Se contarán como incorrectas.`
+                : `Has respondido las ${questions.length} preguntas. Se calculará tu calificación.`}
+            </p>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button onClick={() => setShowConfirm(false)} style={{ flex: 1, padding: '13px', borderRadius: 13, border: `1.5px solid ${T.border}`, background: 'transparent', color: T.textSub, fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
+                Continuar
+              </button>
+              <button onClick={finish} style={{ flex: 1, padding: '13px', borderRadius: 13, border: 'none', background: T.accent, color: '#fff', fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
+                Enviar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </Shell>
+  )
+}
+
+// ── Screen: Exam Result ───────────────────────────────────────────────────────
+function ExamResultScreen({ area, exam, result, questions, onRetry, onHistory, onHome }) {
+  const { correct, total } = result
+  const pct    = Math.round((correct / Math.max(1, total)) * 100)
+  const passed = pct >= 70
+  const [showDetail, setShowDetail] = useState(false)
+
+  return (
+    <Shell>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '28px 22px' }}>
+        <Eyebrow color={T.accent}>Resultado del examen · {area.name}</Eyebrow>
+
+        <h1 style={{ fontFamily: T.fontDisplay, fontSize: 24, fontWeight: 800, letterSpacing: '-.02em', marginTop: 10, lineHeight: 1.15 }}>
+          {passed ? '¡Excelente trabajo!' : 'Sigue practicando'}
+        </h1>
+
+        {/* Ring grande */}
+        <div style={{ position: 'relative', margin: '24px auto', width: 150, height: 150, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Ring pct={pct} color={passed ? T.olive : T.wrong} size={150} sw={8} track={T.bgMuted}/>
+          <div style={{ position: 'absolute', textAlign: 'center' }}>
+            <p style={{ fontFamily: T.fontDisplay, fontSize: 40, fontWeight: 800, color: passed ? T.oliveDk : T.wrong, letterSpacing: '-.02em', lineHeight: 1 }}>{pct}%</p>
+            <p style={{ fontSize: 12, color: T.textSub, marginTop: 2 }}>{correct}/{total}</p>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div style={{ display: 'flex', gap: 10, marginBottom: 18 }}>
+          {[
+            { l: 'Correctas',   v: correct,         bg: T.correctBg, c: T.oliveDk },
+            { l: 'Incorrectas', v: total - correct,  bg: T.wrongBg,   c: T.wrong   },
+          ].map(s => (
+            <div key={s.l} style={{ flex: 1, background: s.bg, borderRadius: 14, padding: '16px 8px', textAlign: 'center' }}>
+              <p style={{ fontFamily: T.fontDisplay, fontSize: 28, fontWeight: 800, color: s.c }}>{s.v}</p>
+              <p style={{ fontSize: 11, color: T.textSub, marginTop: 3 }}>{s.l}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Ver detalle */}
+        <button onClick={() => setShowDetail(v => !v)} style={{
+          width: '100%', padding: '12px', borderRadius: 13, border: `1.5px solid ${T.border}`,
+          background: 'transparent', color: T.textSub, fontFamily: T.fontDisplay, fontWeight: 600, fontSize: 13, cursor: 'pointer', marginBottom: 12,
+        }}>
+          {showDetail ? 'Ocultar detalle' : 'Ver respuestas'}
+        </button>
+
+        {showDetail && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
+            {questions.map((q, i) => {
+              const sel     = result.selected[i]
+              const isOk    = sel === q.ans
+              return (
+                <div key={q.id} style={{ background: T.bgCard, border: `1px solid ${isOk ? T.correctBd : T.wrongBd}`, borderRadius: 12, padding: '12px 14px' }}>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: 6 }}>
+                    <span style={{ flexShrink: 0, marginTop: 1 }}>
+                      {isOk ? <IconCheck size={15} stroke={T.olive}/> : <IconX size={15} stroke={T.wrong}/>}
+                    </span>
+                    <p style={{ fontSize: 12.5, color: T.text, lineHeight: 1.5 }}>{q.q}</p>
+                  </div>
+                  {!isOk && sel !== null && (
+                    <p style={{ fontSize: 11.5, color: T.wrong, marginLeft: 23 }}>Tu respuesta: {q.opts[sel]}</p>
+                  )}
+                  {!isOk && (
+                    <p style={{ fontSize: 11.5, color: T.olive, marginLeft: 23, marginTop: 2 }}>Correcta: {q.opts[q.ans]}</p>
+                  )}
+                  {!isOk && (
+                    <p style={{ fontSize: 11, color: T.textSub, marginLeft: 23, marginTop: 4, lineHeight: 1.5 }}>{q.exp}</p>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </div>
+
+      <div style={{ padding: '8px 20px 24px', display: 'flex', flexDirection: 'column', gap: 9, borderTop: `1px solid ${T.borderSoft}` }}>
+        <button onClick={onRetry} style={{ width: '100%', padding: '14px', borderRadius: 14, border: 'none', background: T.olive, color: '#fff', fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>
+          Repetir examen
+        </button>
+        <button onClick={onHistory} style={{ width: '100%', padding: '13px', borderRadius: 14, border: `1.5px solid ${T.border}`, background: 'transparent', color: T.textSub, fontFamily: T.fontDisplay, fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>
+          Ver historial de exámenes
+        </button>
+        <button onClick={onHome} style={{ width: '100%', padding: '13px', borderRadius: 14, border: `1.5px solid ${T.border}`, background: 'transparent', color: T.textSub, fontFamily: T.fontDisplay, fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>
+          Ir al inicio
+        </button>
+      </div>
+    </Shell>
+  )
+}
+
+// ── Screen: Exam History ──────────────────────────────────────────────────────
+function ExamHistoryScreen({ history, onBack }) {
+  const sorted = [...history].sort((a, b) => b.timestamp - a.timestamp)
+
+  return (
+    <Shell>
+      <div style={{ padding: '20px 20px 0', display: 'flex', alignItems: 'center', gap: 12, borderBottom: `1px solid ${T.borderSoft}`, paddingBottom: 14 }}>
+        <button onClick={onBack} style={{ width: 38, height: 38, borderRadius: 11, border: `1px solid ${T.border}`, background: T.bgCard, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+          <IconArrowLeft size={18} stroke={T.textSub}/>
+        </button>
+        <h2 style={{ fontFamily: T.fontDisplay, fontSize: 20, fontWeight: 800 }}>Historial de exámenes</h2>
+      </div>
+
+      <div style={{ flex: 1, overflowY: 'auto', padding: '16px 16px 24px' }}>
+        {sorted.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '48px 24px' }}>
+            <div style={{ width: 56, height: 56, borderRadius: 16, background: T.bgMuted, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
+              <IconChart size={26} stroke={T.textMuted}/>
+            </div>
+            <p style={{ fontSize: 15, fontWeight: 700, color: T.text }}>Sin exámenes aún</p>
+            <p style={{ fontSize: 13, color: T.textSub, marginTop: 6 }}>Completa tu primer examen para ver tu historial aquí.</p>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {sorted.map(h => {
+              const passed = h.pct >= 70
+              const Icon   = ICONS[h.areaId]
+              const exam   = EXAMS.find(e => e.id === h.examId)
+              return (
+                <div key={h.id} style={{ background: T.bgCard, border: `1px solid ${T.border}`, borderRadius: 14, padding: '14px 16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <div style={{ width: 38, height: 38, borderRadius: 10, background: exam?.tint || T.bgMuted, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      {Icon && <Icon size={19} stroke={exam?.color || T.textSub} sw={1.6}/>}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: 13.5, fontWeight: 700, color: T.text }}>{h.areaName}</p>
+                      <p style={{ fontSize: 11, color: T.textSub, marginTop: 1 }}>{h.examName} · {h.date}</p>
+                    </div>
+                    <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                      <p style={{ fontFamily: T.fontDisplay, fontSize: 20, fontWeight: 800, color: passed ? T.oliveDk : T.wrong }}>{h.pct}%</p>
+                      <p style={{ fontSize: 10.5, color: T.textSub, marginTop: 1 }}>{h.correct}/{h.total}</p>
+                    </div>
+                  </div>
+                  <div style={{ marginTop: 10, height: 5, borderRadius: 5, background: T.bgMuted, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${h.pct}%`, background: passed ? T.olive : T.wrong, borderRadius: 5, transition: 'width .5s' }}/>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </div>
+    </Shell>
+  )
+}
+
 // ── Screen: Result ────────────────────────────────────────────────────────────
 function ResultScreen({ area, exam, answers, total, streak, onRetry, onHome }) {
   const correct = answers.filter(Boolean).length
@@ -922,7 +1272,7 @@ function PaywallScreen({ onBack, userEmail, isPremium }) {
 }
 
 // ── Screen: Progress ──────────────────────────────────────────────────────────
-function ProgressScreen({ progress, streak, onBack }) {
+function ProgressScreen({ progress, streak, onBack, onHistory }) {
   const allAreas = EXAMS.flatMap(e => e.areas.map(a => ({ ...a, examColor: e.color, examName: e.name, examTint: e.tint })))
   const totAns   = Object.values(progress).reduce((s, v) => s + (v.answered || 0), 0)
   const totOk    = Object.values(progress).reduce((s, v) => s + (v.correct  || 0), 0)
@@ -984,6 +1334,16 @@ function ProgressScreen({ progress, streak, onBack }) {
             )
           })}
         </div>
+
+        {/* Botón historial de exámenes */}
+        <button onClick={onHistory} style={{
+          marginTop: 16, width: '100%', padding: '13px', borderRadius: 14,
+          background: 'transparent', border: `1.5px solid ${T.border}`,
+          color: T.accent, fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 13,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer',
+        }}>
+          <IconChart size={16} stroke={T.accent}/> Ver historial de exámenes
+        </button>
       </div>
     </Shell>
   )
@@ -1000,6 +1360,8 @@ export default function App() {
   const [area,        setArea]        = useState(null)
   const [qIdx,        setQIdx]        = useState(0)
   const [answers,     setAnswers]     = useState([])
+  const [examResult,  setExamResult]  = useState(null)
+  const [examHistory, setExamHistory] = useState(() => load('cp_exam_history', []))
   const [progress,    setProgress]    = useState(() => load('cp_progress', {}))
   const [freeUsed,    setFreeUsed]    = useState(() => load('cp_free', {}))
   const [isPremium,   setIsPremium]   = useState(() => {
@@ -1047,7 +1409,38 @@ export default function App() {
     if (used >= FREE_LIMIT && !isPremium) { setArea(a); setExam(ex); setScreen('paywall'); return }
     const qs = QUESTIONS[a.id] || []
     if (!qs.length) return
-    setArea(a); setExam(ex); setQIdx(0); setAnswers([]); bumpStreak(); setScreen('question')
+    setArea(a); setExam(ex); setScreen('modeSelect')
+  }
+
+  function startPractice() {
+    setQIdx(0); setAnswers([]); bumpStreak(); setScreen('question')
+  }
+
+  function startExam() {
+    bumpStreak(); setScreen('examQuestion')
+  }
+
+  function finishExam(result) {
+    const ex = exam || EXAMS.find(e => e.areas.some(ar => ar.id === area.id)) || EXAMS[0]
+    const pct = Math.round((result.correct / Math.max(1, result.total)) * 100)
+    const entry = {
+      id:        Date.now(),
+      timestamp: Date.now(),
+      date:      new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' }),
+      examId:    ex.id,
+      examName:  ex.name,
+      areaId:    area.id,
+      areaName:  area.name,
+      correct:   result.correct,
+      total:     result.total,
+      pct,
+      selected:  result.selected,
+    }
+    const newHistory = [entry, ...examHistory]
+    setExamHistory(newHistory)
+    save('cp_exam_history', newHistory)
+    setExamResult(result)
+    setScreen('examResult')
   }
 
   function recordAnswer(isOk) {
@@ -1132,11 +1525,28 @@ export default function App() {
         />
       )}
 
+      {screen === 'modeSelect' && area && exam && (
+        <ModeSelectorScreen
+          area={area} exam={exam}
+          onPractice={startPractice}
+          onExam={startExam}
+          onBack={() => setScreen('home')}
+        />
+      )}
+
       {screen === 'question' && area && qs.length > 0 && (
         <QuestionScreen
           area={area} exam={exam} qIndex={qIdx} questions={qs}
           streak={streak} aiKey={aiKey}
           onAnswer={recordAnswer} onNext={nextQuestion}
+          onQuit={() => setScreen('home')}
+        />
+      )}
+
+      {screen === 'examQuestion' && area && qs.length > 0 && (
+        <ExamQuestionScreen
+          area={area} exam={exam} questions={qs}
+          onFinish={finishExam}
           onQuit={() => setScreen('home')}
         />
       )}
@@ -1148,12 +1558,28 @@ export default function App() {
         />
       )}
 
+      {screen === 'examResult' && area && examResult && (
+        <ExamResultScreen
+          area={area} exam={exam} result={examResult} questions={qs}
+          onRetry={startExam}
+          onHistory={() => setScreen('examHistory')}
+          onHome={() => setScreen('home')}
+        />
+      )}
+
+      {screen === 'examHistory' && (
+        <ExamHistoryScreen
+          history={examHistory}
+          onBack={() => setScreen('home')}
+        />
+      )}
+
       {screen === 'paywall' && (
         <PaywallScreen onBack={() => setScreen('home')} userEmail={appUser?.email} isPremium={isPremium}/>
       )}
 
       {screen === 'progress' && (
-        <ProgressScreen progress={progress} streak={streak} onBack={() => setScreen('home')}/>
+        <ProgressScreen progress={progress} streak={streak} onBack={() => setScreen('home')} onHistory={() => setScreen('examHistory')}/>
       )}
     </>
   )
