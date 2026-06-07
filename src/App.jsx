@@ -159,10 +159,11 @@ function Field({ label, value, onChange, type = 'text', placeholder }) {
 }
 
 // ── LogoMini — inline SVG (usa Montserrat cargada en pagina) ─────────────────
-function LogoMini({ height = 22, style }) {
+function LogoMini({ height, width, style }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 290"
-      height={height} style={{ display: 'block', ...style }} aria-label="Certus">
+      height={height} width={width}
+      style={{ display: 'block', ...style }} aria-label="Certus">
       <path fill="#8FA88B" d="M212.41,205.32c.6,30.17-31.07,36.75-31.07,36.75.3-24.95,31.07-36.75,31.07-36.75Z"/>
       <path fill="#8FA88B" d="M236.06,182.58c11.42,27.94-15.76,45.47-15.76,45.47-8.7-23.38,15.76-45.47,15.76-45.47Z"/>
       <path fill="#8FA88B" d="M285,208c-21.69,35.63-56.36,24.5-56.36,24.5,18.68-28.99,56.36-24.5,56.36-24.5Z"/>
@@ -389,9 +390,11 @@ function HomeScreen({
       {/* Header */}
       <div style={{ padding: '14px 16px 12px', zIndex: 10, position: 'relative', borderBottom: `1px solid ${T.borderSoft}` }}>
         {/* Fila superior: Logo + racha + hamburguesa */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-          <LogoMini height={20} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+          <div style={{ flex: 3, overflow: 'hidden' }}>
+            <LogoMini width="100%" style={{ maxHeight: 36 }} />
+          </div>
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'flex-end' }}>
             {/* Racha */}
             <div style={{
               display: 'flex', alignItems: 'center', gap: 5, padding: '6px 10px',
