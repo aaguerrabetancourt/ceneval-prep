@@ -1,0 +1,435 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Certus â€” PrepÃ¡rate con confianza para el CENEVAL</title>
+  <meta name="description" content="Certus: la app de preparaciÃ³n para EXANI-I, EXANI-II, EXANI-III y EGEL con mÃ¡s de 2,300 preguntas y Tutor IA. Empieza gratis hoy."/>
+  <meta property="og:title" content="Certus â€” PrepÃ¡rate con confianza"/>
+  <meta property="og:description" content="MÃ¡s de 2,300 preguntas para CENEVAL con Tutor IA incluido."/>
+  <meta property="og:image" content="https://certusapp.mx/pwa-512.png"/>
+  <meta property="og:url" content="https://certusapp.mx"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:      #F1EBDE;
+      --card:    #FBF8F0;
+      --muted:   #ECE4D4;
+      --ink:     #3B362F;
+      --sub:     #857A6C;
+      --faint:   #B3A899;
+      --olive:   #7E9A77;
+      --oliveDk: #566F50;
+      --oliveLt: #E3EEDD;
+      --terra:   #C2664F;
+      --ochre:   #B08D4F;
+      --line:    #E4DACA;
+      --display: 'Montserrat', sans-serif;
+      --body:    'Inter', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--body); background: var(--bg); color: var(--ink); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { text-decoration: none; color: inherit; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(241,235,222,.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo img { height: 28px; }
+    .nav-cta {
+      background: var(--olive); color: #fff;
+      padding: 9px 20px; border-radius: 10px;
+      font-family: var(--display); font-weight: 700; font-size: 14px;
+    }
+
+    /* HERO */
+    .hero {
+      padding: 64px 24px 56px;
+      text-align: center;
+      max-width: 640px; margin: 0 auto;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--oliveLt); color: var(--oliveDk);
+      padding: 5px 16px; border-radius: 999px;
+      font-size: 13px; font-weight: 700; margin-bottom: 22px;
+      border: 1px solid var(--olive);
+    }
+    .hero h1 {
+      font-family: var(--display); font-size: clamp(32px, 8vw, 52px);
+      font-weight: 800; letter-spacing: -.03em; line-height: 1.08;
+      color: var(--ink); margin-bottom: 20px;
+    }
+    .hero h1 span { color: var(--olive); }
+    .hero p {
+      font-size: 17px; color: var(--sub); line-height: 1.7;
+      max-width: 480px; margin: 0 auto 34px;
+    }
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--olive); color: #fff;
+      padding: 15px 32px; border-radius: 14px;
+      font-family: var(--display); font-weight: 700; font-size: 16px;
+      box-shadow: 0 4px 16px rgba(126,154,119,.35);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(126,154,119,.4); }
+    .btn-ghost {
+      border: 1.5px solid var(--line); color: var(--sub);
+      padding: 14px 28px; border-radius: 14px;
+      font-family: var(--display); font-weight: 600; font-size: 15px;
+    }
+
+    /* STATS */
+    .stats {
+      display: flex; justify-content: center; gap: 0;
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 20px; margin: 0 24px 64px;
+      max-width: 700px; margin-left: auto; margin-right: auto;
+      overflow: hidden;
+    }
+    .stat {
+      flex: 1; padding: 22px 16px; text-align: center;
+      border-right: 1px solid var(--line);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-n { font-family: var(--display); font-size: 28px; font-weight: 800; color: var(--olive); }
+    .stat-l { font-size: 12px; color: var(--sub); margin-top: 4px; }
+
+    /* PROBLEMA */
+    .problema {
+      background: var(--ink); color: #fff;
+      padding: 56px 24px; text-align: center;
+    }
+    .problema h2 { font-family: var(--display); font-size: 28px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 14px; }
+    .problema p { font-size: 16px; color: rgba(255,255,255,.7); max-width: 520px; margin: 0 auto; line-height: 1.7; }
+    .problema strong { color: #fff; }
+
+    /* SECCION GENÃ‰RICA */
+    section { padding: 64px 24px; max-width: 760px; margin: 0 auto; }
+    .section-title { font-family: var(--display); font-size: 26px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 10px; }
+    .section-sub { font-size: 15px; color: var(--sub); margin-bottom: 36px; line-height: 1.6; }
+
+    /* EXAMENES */
+    .exams-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .exam-card {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 18px; padding: 20px 18px;
+      box-shadow: 0 1px 2px rgba(74,67,62,.04);
+    }
+    .exam-icon {
+      width: 44px; height: 44px; border-radius: 13px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 12px;
+    }
+    .exam-name { font-family: var(--display); font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+    .exam-desc { font-size: 12px; color: var(--sub); line-height: 1.5; }
+    .exam-areas { margin-top: 10px; font-size: 11px; color: var(--faint); }
+
+    /* FEATURES */
+    .features-grid { display: flex; flex-direction: column; gap: 14px; }
+    .feature-card {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 16px; padding: 20px 18px;
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .feature-icon {
+      width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 22px;
+    }
+    .feature-title { font-family: var(--display); font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .feature-desc { font-size: 13px; color: var(--sub); line-height: 1.55; }
+
+    /* TESTIMONIALES */
+    .testi-grid { display: flex; flex-direction: column; gap: 14px; }
+    .testi-card {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 16px; padding: 20px 18px;
+    }
+    .testi-stars { color: var(--ochre); font-size: 15px; margin-bottom: 10px; }
+    .testi-text { font-size: 14px; color: var(--ink); line-height: 1.65; margin-bottom: 14px; font-style: italic; }
+    .testi-author { display: flex; align-items: center; gap: 10px; }
+    .testi-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 14px; color: #fff;
+    }
+    .testi-name { font-size: 13px; font-weight: 700; }
+    .testi-role { font-size: 11px; color: var(--sub); }
+
+    /* PRECIOS */
+    .plans-grid { display: flex; flex-direction: column; gap: 12px; }
+    .plan-card {
+      background: var(--card); border: 1.5px solid var(--line);
+      border-radius: 18px; padding: 22px 20px;
+      position: relative;
+    }
+    .plan-card.featured { border-color: var(--olive); background: var(--oliveLt); }
+    .plan-badge {
+      position: absolute; top: -12px; left: 20px;
+      background: var(--olive); color: #fff;
+      padding: 3px 14px; border-radius: 999px;
+      font-size: 11px; font-weight: 700;
+    }
+    .plan-name { font-family: var(--display); font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+    .plan-price { display: flex; align-items: baseline; gap: 4px; margin: 10px 0; }
+    .plan-amount { font-family: var(--display); font-size: 34px; font-weight: 800; color: var(--olive); }
+    .plan-period { font-size: 13px; color: var(--sub); }
+    .plan-desc { font-size: 13px; color: var(--sub); margin-bottom: 16px; }
+    .plan-features { display: flex; flex-direction: column; gap: 6px; }
+    .plan-feature { font-size: 13px; color: var(--ink); display: flex; gap: 8px; align-items: center; }
+    .plan-feature::before { content: "âœ“"; color: var(--olive); font-weight: 800; flex-shrink: 0; }
+
+    /* CTA FINAL */
+    .cta-final {
+      background: var(--olive); color: #fff;
+      padding: 64px 24px; text-align: center;
+    }
+    .cta-final h2 { font-family: var(--display); font-size: 28px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 12px; }
+    .cta-final p { font-size: 16px; color: rgba(255,255,255,.8); margin-bottom: 28px; line-height: 1.6; }
+    .btn-white {
+      background: #fff; color: var(--oliveDk);
+      padding: 15px 36px; border-radius: 14px;
+      font-family: var(--display); font-weight: 800; font-size: 16px;
+      display: inline-block;
+      box-shadow: 0 4px 20px rgba(0,0,0,.15);
+      transition: transform .15s;
+    }
+    .btn-white:hover { transform: translateY(-2px); }
+
+    /* FOOTER */
+    footer {
+      background: var(--ink); color: rgba(255,255,255,.5);
+      padding: 32px 24px; text-align: center; font-size: 13px;
+    }
+    footer a { color: rgba(255,255,255,.6); margin: 0 8px; }
+
+    @media (min-width: 600px) {
+      .exams-grid { grid-template-columns: 1fr 1fr; }
+      .stats { flex-direction: row; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <img src="/certus-logo-mini.svg" alt="Certus"/>
+  </div>
+  <a href="/app" class="nav-cta">Empieza gratis</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">âœ¦ MÃ¡s de 2,300 preguntas CENEVAL</div>
+  <h1>PrepÃ¡rate para el CENEVAL <span>con confianza</span></h1>
+  <p>Practica con preguntas reales, simula el examen completo y mejora con tu Tutor IA. Disponible para EXANI-I, EXANI-II, EXANI-III y EGEL.</p>
+  <div class="hero-btns">
+    <a href="/app" class="btn-primary">Empieza gratis â†’</a>
+    <a href="#precios" class="btn-ghost">Ver planes</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-n">2,300+</div><div class="stat-l">Preguntas</div></div>
+  <div class="stat"><div class="stat-n">4</div><div class="stat-l">ExÃ¡menes</div></div>
+  <div class="stat"><div class="stat-n">15</div><div class="stat-l">Ãreas temÃ¡ticas</div></div>
+  <div class="stat"><div class="stat-n">IA</div><div class="stat-l">Tutor incluido</div></div>
+</div>
+
+<!-- PROBLEMA -->
+<div class="problema">
+  <h2>El 60% reprueba el CENEVAL por falta de prÃ¡ctica</h2>
+  <p>La mayorÃ­a estudia el contenido pero nunca practica bajo condiciones reales de examen. Certus te da <strong>la prÃ¡ctica que necesitas</strong> para llegar con confianza el dÃ­a del examen.</p>
+</div>
+
+<!-- EXAMENES -->
+<section id="examenes">
+  <div class="section-title">4 exÃ¡menes cubiertos</div>
+  <div class="section-sub">Certus cubre todos los exÃ¡menes CENEVAL con preguntas actualizadas y organizadas por Ã¡rea temÃ¡tica.</div>
+  <div class="exams-grid">
+    <div class="exam-card">
+      <div class="exam-icon" style="background:#EDE8F5;">ðŸŽ“</div>
+      <div class="exam-name" style="color:#7A5FA5;">EXANI-I</div>
+      <div class="exam-desc">Ingreso al bachillerato. EvalÃºa habilidades matemÃ¡ticas, analÃ­ticas, lectoras y verbales.</div>
+      <div class="exam-areas">4 Ã¡reas Â· 155 preguntas c/u</div>
+    </div>
+    <div class="exam-card">
+      <div class="exam-icon" style="background:#EBF0DC;">ðŸ“š</div>
+      <div class="exam-name" style="color:#6B7C45;">EXANI-II</div>
+      <div class="exam-desc">Ingreso a licenciatura. Pensamiento matemÃ¡tico, analÃ­tico, comprensiÃ³n y redacciÃ³n.</div>
+      <div class="exam-areas">4 Ã¡reas Â· 155 preguntas c/u</div>
+    </div>
+    <div class="exam-card">
+      <div class="exam-icon" style="background:#E8ECFA;">ðŸ”¬</div>
+      <div class="exam-name" style="color:#5B6FA0;">EXANI-III</div>
+      <div class="exam-desc">Ingreso a posgrado. Habilidades verbales, matemÃ¡ticas, lectoras avanzadas e inglÃ©s tÃ©cnico.</div>
+      <div class="exam-areas">4 Ã¡reas Â· 155 preguntas c/u</div>
+    </div>
+    <div class="exam-card">
+      <div class="exam-icon" style="background:#F5EDE4;">ðŸ›ï¸</div>
+      <div class="exam-name" style="color:#A6643C;">EGEL</div>
+      <div class="exam-desc">Egreso de licenciatura. Ãrea disciplinar, Ã©tica profesional y comunicaciÃ³n.</div>
+      <div class="exam-areas">3 Ã¡reas Â· 155 preguntas c/u</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section style="background:var(--muted); max-width:100%; padding: 64px 24px;">
+  <div style="max-width:720px; margin:0 auto;">
+    <div class="section-title">Todo lo que necesitas para aprobar</div>
+    <div class="section-sub">Certus combina prÃ¡ctica inteligente con tecnologÃ­a para que cada minuto de estudio cuente.</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--oliveLt);">ðŸ“</div>
+        <div>
+          <div class="feature-title">Modo PrÃ¡ctica</div>
+          <div class="feature-desc">Practica por Ã¡rea temÃ¡tica con retroalimentaciÃ³n inmediata. Cada respuesta incluye explicaciÃ³n detallada de por quÃ© es correcta o incorrecta.</div>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#F6ECD6;">â±ï¸</div>
+        <div>
+          <div class="feature-title">Modo Examen</div>
+          <div class="feature-desc">Simula el examen real: responde todas las preguntas sin retroalimentaciÃ³n y recibe tu calificaciÃ³n al final. Guarda tu historial de intentos.</div>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--oliveLt);">ðŸ¤–</div>
+        <div>
+          <div class="feature-title">Tutor IA</div>
+          <div class="feature-desc">Cuando no entiendes una respuesta, el Tutor IA te explica el concepto con palabras claras. Aprende mÃ¡s rÃ¡pido con explicaciones personalizadas.</div>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#F6ECD6;">ðŸ“Š</div>
+        <div>
+          <div class="feature-title">Seguimiento de progreso</div>
+          <div class="feature-desc">Visualiza tu avance por examen y Ã¡rea. El historial de calificaciones te muestra si estÃ¡s mejorando con cada intento.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALES -->
+<section id="testimoniales">
+  <div class="section-title">Lo que dicen nuestros usuarios</div>
+  <div class="section-sub">Estudiantes reales que se prepararon con Certus y aprobaron su examen.</div>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-stars">â˜…â˜…â˜…â˜…â˜…</div>
+      <div class="testi-text">"ReprobÃ© el EXANI-II dos veces. Con Certus practiquÃ© todos los dÃ­as durante un mes y finalmente aprobÃ©. El Tutor IA me ayudÃ³ a entender las matemÃ¡ticas que nunca habÃ­a comprendido."</div>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background:#7A5FA5;">MG</div>
+        <div>
+          <div class="testi-name">Mariana G.</div>
+          <div class="testi-role">EXANI-II Â· Guadalajara</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">â˜…â˜…â˜…â˜…â˜…</div>
+      <div class="testi-text">"El modo examen es increÃ­ble. Practicar sin ver las respuestas me preparÃ³ mentalmente para la presiÃ³n del examen real. SaquÃ© 85 en el EXANI-III."</div>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background:#5B6FA0;">RC</div>
+        <div>
+          <div class="testi-name">Roberto C.</div>
+          <div class="testi-role">EXANI-III Â· Ciudad de MÃ©xico</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">â˜…â˜…â˜…â˜…â˜…</div>
+      <div class="testi-text">"UsÃ© Certus solo 20 minutos al dÃ­a durante 3 semanas. El historial de progreso me motivÃ³ a seguir porque podÃ­a ver cÃ³mo mejoraba. RecomendadÃ­simo."</div>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background:#6B7C45;">AL</div>
+        <div>
+          <div class="testi-name">Ana L.</div>
+          <div class="testi-role">EXANI-I Â· Monterrey</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRECIOS -->
+<section id="precios" style="background:var(--card); max-width:100%; padding:64px 24px;">
+  <div style="max-width:600px; margin:0 auto;">
+    <div class="section-title">Planes y precios</div>
+    <div class="section-sub">Empieza gratis con 3 preguntas por Ã¡rea. Desbloquea acceso completo con cualquier plan.</div>
+    <div class="plans-grid">
+      <div class="plan-card featured">
+        <div class="plan-badge">âœ¦ MÃ¡s popular</div>
+        <div class="plan-name">Plan Anual</div>
+        <div class="plan-price">
+          <span class="plan-amount">$99</span>
+          <span class="plan-period">/mes Â· cobro mensual</span>
+        </div>
+        <div class="plan-desc">El mejor precio. Ahorra 50% vs mensual.</div>
+        <div class="plan-features">
+          <div class="plan-feature">Acceso a los 4 exÃ¡menes CENEVAL</div>
+          <div class="plan-feature">2,300+ preguntas ilimitadas</div>
+          <div class="plan-feature">Modo Examen con historial</div>
+          <div class="plan-feature">Tutor IA sin lÃ­mites</div>
+          <div class="plan-feature">Cancela cuando quieras</div>
+        </div>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">Plan Trimestral</div>
+        <div class="plan-price">
+          <span class="plan-amount" style="color:var(--ochre);">$149</span>
+          <span class="plan-period">/mes Â· cobro mensual</span>
+        </div>
+        <div class="plan-desc">Ideal para una preparaciÃ³n de 3 meses.</div>
+        <div class="plan-features">
+          <div class="plan-feature">Todo del plan anual</div>
+          <div class="plan-feature">Ahorra 25% vs mensual</div>
+        </div>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">Plan Mensual</div>
+        <div class="plan-price">
+          <span class="plan-amount" style="color:var(--sub);">$199</span>
+          <span class="plan-period">/mes</span>
+        </div>
+        <div class="plan-desc">Para prepararte en pocas semanas.</div>
+        <div class="plan-features">
+          <div class="plan-feature">Todo del plan anual</div>
+          <div class="plan-feature">Sin compromiso a largo plazo</div>
+        </div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:12px; color:var(--faint); margin-top:18px;">Pago seguro vÃ­a Stripe Â· Cancela en cualquier momento</p>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<div class="cta-final">
+  <h2>Empieza a practicar hoy â€” es gratis</h2>
+  <p>Crea tu cuenta con Google en segundos y accede a tus primeras preguntas sin tarjeta de crÃ©dito.</p>
+  <a href="/app" class="btn-white">Crear cuenta gratis â†’</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p style="margin-bottom:10px;">
+    <a href="/privacy">PolÃ­tica de privacidad</a>
+    <a href="/terms">TÃ©rminos y condiciones</a>
+    <a href="mailto:info@certusapp.mx">info@certusapp.mx</a>
+  </p>
+  <p>Â© 2026 Bravo Agencia Digital S. de R.L. de C.V. Â· Todos los derechos reservados.</p>
+</footer>
+
+</body>
+</html>

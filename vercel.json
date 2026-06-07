@@ -1,0 +1,11 @@
+{
+  "rewrites": [
+    { "source": "/app", "destination": "/index.html" },
+    { "source": "/app/(.*)", "destination": "/index.html" },
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/terms", "destination": "/terms.html" },
+    { "source": "/landing", "destination": "/landing.html" },
+    { "source": "/", "destination": "/landing.html" }
+  ]
+}

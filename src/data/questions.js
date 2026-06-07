@@ -1,4 +1,5 @@
-import { QUESTIONS_EXTRA } from './questionsExtra.js'
+import { QUESTIONS_EXTRA }  from './questionsExtra.js'
+import { QUESTIONS_EXTRA2 } from './questionsExtra2.js'
 
 const BASE = {
   mat: [
@@ -1170,12 +1171,15 @@ const BASE = {
   ],
 }
 
-// Merge base (10/area) + extra (45/area) = 55 preguntas por area
-// Incluye todas las areas: EXANI-I (imat,iana,ilec,iverb) + EXANI-II + EXANI-III + EGEL
-const ALL_AREAS = [...Object.keys(BASE), ...Object.keys(QUESTIONS_EXTRA).filter(k => !Object.keys(BASE).includes(k))]
+// Merge base (10) + extra (45) + extra2 (100) = 155 preguntas por area
+const ALL_AREAS = [...new Set([
+  ...Object.keys(BASE),
+  ...Object.keys(QUESTIONS_EXTRA),
+  ...Object.keys(QUESTIONS_EXTRA2),
+])]
 export const QUESTIONS = Object.fromEntries(
   ALL_AREAS.map(area => [
     area,
-    [...(BASE[area] || []), ...(QUESTIONS_EXTRA[area] || [])]
+    [...(BASE[area] || []), ...(QUESTIONS_EXTRA[area] || []), ...(QUESTIONS_EXTRA2[area] || [])]
   ])
 )
