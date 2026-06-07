@@ -250,7 +250,7 @@ function DropdownMenu({
 
             {/* Seccion: PUNTUACION */}
             <div style={{ padding: '0 4px 10px', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Eyebrow>Mi puntuacion</Eyebrow>
+              <Eyebrow>Mi puntuación</Eyebrow>
               <span style={{ fontSize: 9.5, fontWeight: 800, color: activeExam.color, background: activeExam.tint, padding: '2px 8px', borderRadius: 999 }}>{activeExam.name}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '4px 6px 6px' }}>
@@ -302,7 +302,7 @@ function DropdownMenu({
               </div>
               <div style={{ flex: 1 }}>
                 <p style={{ fontSize: 13, fontWeight: 600, color: T.text }}>Meta diaria</p>
-                <p style={{ fontSize: 10.5, color: T.textSub, marginTop: 1 }}>{dailyGoal} preguntas al dia</p>
+                <p style={{ fontSize: 10.5, color: T.textSub, marginTop: 1 }}>{dailyGoal} preguntas al día</p>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <button onClick={() => setDailyGoal(g => Math.max(5, g - 5))} style={{ width: 26, height: 26, borderRadius: 8, border: `1px solid ${T.border}`, background: T.bg, color: T.textSub, fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>–</button>
@@ -351,7 +351,7 @@ function DropdownMenu({
               border: `1.5px solid ${T.border}`, color: T.wrong,
               fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 13, cursor: 'pointer',
             }}>
-              <IconLogout size={17} stroke={T.wrong}/> Cerrar sesion
+              <IconLogout size={17} stroke={T.wrong}/> Cerrar sesión
             </button>
           </div>
         </div>
@@ -493,7 +493,7 @@ function HomeScreen({
 
         {/* Tarjeta "Continua donde quedaste" */}
         <div style={{ marginTop: 18, padding: '16px', borderRadius: 20, background: T.oliveLt, border: `1px solid ${T.correctBd}` }}>
-          <Eyebrow color={T.oliveDk}>Continua donde quedaste</Eyebrow>
+          <Eyebrow color={T.oliveDk}>Continúa donde quedaste</Eyebrow>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 10 }}>
             <div style={{
               width: 44, height: 44, borderRadius: 13, background: activeExam.tint,
@@ -518,15 +518,15 @@ function HomeScreen({
             fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 13,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, cursor: 'pointer',
           }}>
-            Reanudar practica <IconArrowRight size={16} stroke="#fff"/>
+            Reanudar práctica <IconArrowRight size={16} stroke="#fff"/>
           </button>
         </div>
 
         {/* Lista de areas */}
         <div style={{ marginTop: 22 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-            <Eyebrow color={T.textMuted}>Areas de {activeExam.name}</Eyebrow>
-            <span style={{ fontSize: 10.5, color: T.textSub }}>{activeExam.areas.length} areas</span>
+            <Eyebrow color={T.textMuted}>Áreas de {activeExam.name}</Eyebrow>
+            <span style={{ fontSize: 10.5, color: T.textSub }}>{activeExam.areas.length} áreas</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
             {activeExam.areas.map(a => {
@@ -614,7 +614,7 @@ function QuestionScreen({ area, exam, qIndex, questions, streak, aiKey, onAnswer
         body: JSON.stringify({
           model: 'claude-haiku-4-5',
           max_tokens: 280,
-          messages: [{ role: 'user', content: `Explica en 3-4 oraciones claras en espanol por que la respuesta correcta es "${q.opts[q.ans]}" para esta pregunta de examen CENEVAL.\n\nPregunta: ${q.q}\nOpciones: ${q.opts.map((o, i) => `${i + 1}. ${o}`).join(', ')}\nContexto: ${q.exp}` }],
+          messages: [{ role: 'user', content: `Explica en 3-4 oraciones claras en español por qué la respuesta correcta es "${q.opts[q.ans]}" para esta pregunta de examen CENEVAL.\n\nPregunta: ${q.q}\nOpciones: ${q.opts.map((o, i) => `${i + 1}. ${o}`).join(', ')}\nContexto: ${q.exp}` }],
         }),
       })
       const data = await res.json()
@@ -701,7 +701,7 @@ function QuestionScreen({ area, exam, qIndex, questions, streak, aiKey, onAnswer
               color: T.oliveDk, cursor: aiLoading ? 'wait' : 'pointer',
             }}>
               <IconSpark size={15} stroke={T.oliveDk} fill="#EAD9A8" sw={1.5}/>
-              {aiLoading ? 'Consultando tutor...' : 'Pidele mas al Tutor IA'}
+              {aiLoading ? 'Consultando tutor...' : 'Pídele más al Tutor IA'}
             </button>
             {aiText && (
               <div style={{ marginTop: 10, padding: '10px 12px', borderRadius: 10, background: T.bgCard, fontSize: 12.5, color: T.text, lineHeight: 1.65 }}>
@@ -774,7 +774,7 @@ function ResultScreen({ area, exam, answers, total, streak, onRetry, onHome }) {
             <IconSpark size={19} stroke={T.accent} fill="#EAD9A8" sw={1.5}/>
           </div>
           <p style={{ fontSize: 12.5, color: T.textSub, lineHeight: 1.5 }}>
-            {passed ? 'Superaste el 70%. ¡Excelente dominio del tema!' : 'Sigue practicando — cada pregunta te acerca mas al objetivo.'}
+            {passed ? 'Superaste el 70%. ¡Excelente dominio del tema!' : 'Sigue practicando — cada pregunta te acerca más al objetivo.'}
           </p>
         </div>
       </div>
@@ -837,7 +837,7 @@ function PaywallScreen({ onBack, userEmail, isPremium }) {
           <p style={{ color: T.textSub, marginTop: 8, fontSize: 14, lineHeight: 1.6 }}>Tienes acceso ilimitado a todas las preguntas, exámenes y el Tutor IA.</p>
         </div>
         <div style={{ width: '100%', background: T.oliveLt, borderRadius: 14, padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {['Preguntas ilimitadas en todos los examenes','Tutor IA sin restricciones','Historial completo de progreso','Acceso a EXANI-I, II, III y EGEL'].map(b => (
+          {['Preguntas ilimitadas en todos los exámenes','Tutor IA sin restricciones','Historial completo de progreso','Acceso a EXANI-I, II, III y EGEL'].map(b => (
             <div key={b} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <IconCheck size={14} stroke={T.oliveDk}/>
               <p style={{ fontSize: 13, color: T.oliveDk, fontWeight: 500 }}>{b}</p>
@@ -845,7 +845,7 @@ function PaywallScreen({ onBack, userEmail, isPremium }) {
           ))}
         </div>
         <p style={{ fontSize: 12, color: T.textMuted, lineHeight: 1.5 }}>
-          Para cancelar tu suscripcion escribe a{' '}
+          Para cancelar tu suscripción escribe a{' '}
           <a href="mailto:info@certusapp.mx" style={{ color: T.olive }}>info@certusapp.mx</a>
         </p>
         <button onClick={onBack} style={{
@@ -871,10 +871,10 @@ function PaywallScreen({ onBack, userEmail, isPremium }) {
 
         <div style={{ background: T.oliveLt, borderRadius: 14, padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 9 }}>
           {[
-            'Preguntas ilimitadas en todas las areas',
+            'Preguntas ilimitadas en todas las áreas',
             'Tutor IA sin restricciones',
             'Historial completo de progreso',
-            'Acceso a los 4 examenes CENEVAL',
+            'Acceso a los 4 exámenes CENEVAL',
           ].map(b => (
             <div key={b} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <IconCheck size={15} stroke={T.oliveDk}/>
@@ -950,7 +950,7 @@ function ProgressScreen({ progress, streak, onBack }) {
           {[
             { label: 'Respondidas', val: totAns,    color: T.text  },
             { label: 'Correctas',   val: totOk,     color: T.olive },
-            { label: 'Precision',   val: `${pct}%`, color: T.accent },
+            { label: 'Precisión',   val: `${pct}%`, color: T.accent },
             { label: 'Racha',       val: streak,    color: T.streak },
           ].map(s => (
             <div key={s.label} style={{ flex: 1, background: T.bgCard, border: `1px solid ${T.border}`, borderRadius: 13, padding: '12px 6px', textAlign: 'center' }}>
@@ -960,7 +960,7 @@ function ProgressScreen({ progress, streak, onBack }) {
           ))}
         </div>
 
-        <Eyebrow color={T.textMuted} style={{ marginBottom: 10 }}>Por area</Eyebrow>
+        <Eyebrow color={T.textMuted} style={{ marginBottom: 10 }}>Por área</Eyebrow>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
           {allAreas.map(area => {
             const Icon  = ICONS[area.id]
