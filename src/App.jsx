@@ -210,7 +210,7 @@ function LogoMini({ height = 22, style }) {
 function DropdownMenu({
   open, onClose, activeId, setActiveId,
   streak, progress, dailyGoal, setDailyGoal,
-  remindersOn, setRemindersOn, tutorOn, setTutorOn, onLogout,
+  remindersOn, setRemindersOn, tutorOn, setTutorOn, onLogout, onPlans, isPremium,
 }) {
   const activeExam = EXAMS.find(e => e.id === activeId)
   const sc = examScore(activeExam, progress)
@@ -365,6 +365,18 @@ function DropdownMenu({
               </div>
               <Toggle on={tutorOn} onClick={() => setTutorOn(v => !v)}/>
             </div>
+            {/* Planes Premium */}
+            <button onClick={() => { onClose(); onPlans() }} style={{
+              width: '100%', marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              padding: '13px', borderRadius: 13, cursor: 'pointer',
+              background: isPremium ? T.oliveLt : T.accent,
+              border: 'none',
+              fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 13,
+              color: isPremium ? T.oliveDk : '#fff',
+            }}>
+              <IconLock size={17} stroke={isPremium ? T.oliveDk : '#fff'} fill={isPremium ? T.oliveLt : T.accent}/>
+              {isPremium ? 'Plan Premium activo ✓' : 'Ver planes Premium'}
+            </button>
             {/* Cerrar sesion */}
             <button onClick={onLogout} style={{
               width: '100%', marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
@@ -384,7 +396,7 @@ function DropdownMenu({
 // ── Screen: Home (exam-driven) ────────────────────────────────────────────────
 function HomeScreen({
   user, activeExamId, setActiveExamId, streak, progress,
-  freeUsed, isPremium, onArea, onProgress, onLogout,
+  freeUsed, isPremium, onArea, onProgress, onLogout, onPlans,
   dailyGoal, setDailyGoal, remindersOn, setRemindersOn, tutorOn, setTutorOn,
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -411,7 +423,7 @@ function HomeScreen({
         dailyGoal={dailyGoal} setDailyGoal={setDailyGoal}
         remindersOn={remindersOn} setRemindersOn={setRemindersOn}
         tutorOn={tutorOn} setTutorOn={setTutorOn}
-        onLogout={onLogout}
+        onLogout={onLogout} onPlans={onPlans} isPremium={isPremium}
       />
 
       {/* Header switcher */}
@@ -550,15 +562,28 @@ function HomeScreen({
           </div>
         </div>
 
-        {/* Progreso completo */}
-        <button onClick={onProgress} style={{
-          marginTop: 16, width: '100%', padding: '14px', borderRadius: 14,
-          background: 'transparent', border: `1.5px solid ${T.border}`,
-          color: T.oliveDk, fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 13,
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer',
-        }}>
-          <IconChart size={17} stroke={T.oliveDk} sw={1.7}/> Ver mi progreso completo
-        </button>
+        {/* Botones inferiores */}
+        <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+          <button onClick={onProgress} style={{
+            flex: 1, padding: '13px', borderRadius: 14,
+            background: 'transparent', border: `1.5px solid ${T.border}`,
+            color: T.oliveDk, fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 12,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, cursor: 'pointer',
+          }}>
+            <IconChart size={16} stroke={T.oliveDk} sw={1.7}/> Mi progreso
+          </button>
+          <button onClick={onPlans} style={{
+            flex: 1, padding: '13px', borderRadius: 14,
+            background: isPremium ? T.oliveLt : T.accent,
+            border: 'none',
+            color: isPremium ? T.oliveDk : '#fff',
+            fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 12,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, cursor: 'pointer',
+          }}>
+            <IconLock size={16} stroke={isPremium ? T.oliveDk : '#fff'} fill={isPremium ? T.oliveLt : T.accent}/>
+            {isPremium ? 'Premium ✓' : 'Ver planes'}
+          </button>
+        </div>
       </div>
     </Shell>
   )
@@ -781,7 +806,7 @@ const PLANS = [
   { id: 'monthly',   label: 'Mensual',    price: '$199', tag: null,          savings: null           },
 ]
 
-function PaywallScreen({ onBack, userEmail }) {
+function PaywallScreen({ onBack, userEmail, isPremium }) {
   const [sel,     setSel]     = useState('annual')
   const [loading, setLoading] = useState(false)
   const [error,   setError]   = useState(null)
@@ -803,6 +828,37 @@ function PaywallScreen({ onBack, userEmail }) {
     }
   }
 
+  // Pantalla de usuario ya premium
+  if (isPremium) return (
+    <Shell>
+      <div style={{ padding: '48px 24px 32px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20, textAlign: 'center' }}>
+        <div style={{ width: 72, height: 72, borderRadius: 20, background: T.oliveLt, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <IconCheck size={36} stroke={T.oliveDk}/>
+        </div>
+        <div>
+          <h2 style={{ fontFamily: T.fontDisplay, fontSize: 24, fontWeight: 800, color: T.oliveDk }}>Plan Premium activo</h2>
+          <p style={{ color: T.textSub, marginTop: 8, fontSize: 14, lineHeight: 1.6 }}>Tienes acceso ilimitado a todas las preguntas, exámenes y el Tutor IA.</p>
+        </div>
+        <div style={{ width: '100%', background: T.oliveLt, borderRadius: 14, padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {['Preguntas ilimitadas en todos los examenes','Tutor IA sin restricciones','Historial completo de progreso','Acceso a EXANI-I, II, III y EGEL'].map(b => (
+            <div key={b} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <IconCheck size={14} stroke={T.oliveDk}/>
+              <p style={{ fontSize: 13, color: T.oliveDk, fontWeight: 500 }}>{b}</p>
+            </div>
+          ))}
+        </div>
+        <p style={{ fontSize: 12, color: T.textMuted, lineHeight: 1.5 }}>
+          Para cancelar tu suscripcion escribe a{' '}
+          <a href="mailto:info@certusapp.mx" style={{ color: T.olive }}>info@certusapp.mx</a>
+        </p>
+        <button onClick={onBack} style={{
+          width: '100%', padding: '14px', borderRadius: 14, border: `1.5px solid ${T.border}`,
+          background: 'transparent', color: T.textSub, fontFamily: T.fontDisplay, fontWeight: 600, fontSize: 14, cursor: 'pointer',
+        }}>← Volver al inicio</button>
+      </div>
+    </Shell>
+  )
+
   return (
     <Shell>
       <div style={{ padding: '36px 20px 32px', display: 'flex', flexDirection: 'column', gap: 22 }}>
@@ -810,7 +866,7 @@ function PaywallScreen({ onBack, userEmail }) {
           <div style={{ width: 60, height: 60, borderRadius: 18, background: T.streakBg, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
             <IconLock size={28} stroke={T.accent} fill={T.accentLt}/>
           </div>
-          <h2 style={{ fontFamily: T.fontDisplay, fontSize: 24, fontWeight: 800, letterSpacing: '-.02em' }}>Acceso ilimitado</h2>
+          <h2 style={{ fontFamily: T.fontDisplay, fontSize: 24, fontWeight: 800, letterSpacing: '-.02em' }}>Planes Certus</h2>
           <p style={{ color: T.textSub, marginTop: 8, fontSize: 14, lineHeight: 1.65 }}>
             Agotaste tus {FREE_LIMIT} preguntas gratuitas. Desbloquea acceso completo.
           </p>
@@ -1072,7 +1128,7 @@ export default function App() {
           user={appUser}
           activeExamId={activeExamId} setActiveExamId={handleSetActiveExamId}
           streak={streak} progress={progress} freeUsed={freeUsed} isPremium={isPremium}
-          onArea={selectArea} onProgress={() => setScreen('progress')} onLogout={logout}
+          onArea={selectArea} onProgress={() => setScreen('progress')} onLogout={logout} onPlans={() => setScreen('paywall')}
           dailyGoal={dailyGoal} setDailyGoal={handleSetDailyGoal}
           remindersOn={remindersOn} setRemindersOn={handleSetReminders}
           tutorOn={tutorOn} setTutorOn={handleSetTutor}
@@ -1096,7 +1152,7 @@ export default function App() {
       )}
 
       {screen === 'paywall' && (
-        <PaywallScreen onBack={() => setScreen('home')} userEmail={appUser?.email}/>
+        <PaywallScreen onBack={() => setScreen('home')} userEmail={appUser?.email} isPremium={isPremium}/>
       )}
 
       {screen === 'progress' && (
