@@ -363,7 +363,7 @@ function DropdownMenu({
 // ── Screen: Home (exam-driven) ────────────────────────────────────────────────
 function HomeScreen({
   user, activeExamId, setActiveExamId, streak, progress,
-  freeUsed, isPremium, onArea, onProgress, onLogout, onPlans,
+  freeUsed, isPremium, onArea, onProgress, onLogout, onPlans, onFullExam,
   dailyGoal, setDailyGoal, remindersOn, setRemindersOn, tutorOn, setTutorOn,
 }) {
   const [menuOpen,       setMenuOpen]       = useState(false)
@@ -572,14 +572,26 @@ function HomeScreen({
           </div>
         </div>
 
-        {/* Boton progreso */}
+        {/* Botón examen completo */}
+        <button onClick={onFullExam} style={{
+          marginTop: 16, width: '100%', padding: '14px', borderRadius: 14,
+          background: T.accent, border: 'none',
+          color: '#fff', fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 14,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer',
+          boxShadow: '0 2px 8px rgba(176,141,79,.3)',
+        }}>
+          <IconChart size={17} stroke="#fff" sw={1.7}/>
+          Realizar examen de {activeExam.name}
+        </button>
+
+        {/* Botón progreso */}
         <button onClick={onProgress} style={{
-          marginTop: 16, width: '100%', padding: '13px', borderRadius: 14,
+          marginTop: 10, width: '100%', padding: '13px', borderRadius: 14,
           background: 'transparent', border: `1.5px solid ${T.border}`,
           color: T.oliveDk, fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 13,
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer',
         }}>
-          <IconChart size={17} stroke={T.oliveDk} sw={1.7}/> Ver mi progreso completo
+          <IconChart size={16} stroke={T.oliveDk} sw={1.7}/> Ver mi progreso completo
         </button>
       </div>
     </Shell>
@@ -945,7 +957,7 @@ function ExamResultScreen({ area, exam, result, questions, onRetry, onHistory, o
   return (
     <Shell>
       <div style={{ flex: 1, overflowY: 'auto', padding: '28px 22px' }}>
-        <Eyebrow color={T.accent}>Resultado del examen · {area.name}</Eyebrow>
+        <Eyebrow color={T.accent}>Resultado · {area?.isFullExam ? `${exam?.name} completo` : area.name}</Eyebrow>
 
         <h1 style={{ fontFamily: T.fontDisplay, fontSize: 24, fontWeight: 800, letterSpacing: '-.02em', marginTop: 10, lineHeight: 1.15 }}>
           {passed ? '¡Excelente trabajo!' : 'Sigue practicando'}
@@ -1360,8 +1372,10 @@ export default function App() {
   const [area,        setArea]        = useState(null)
   const [qIdx,        setQIdx]        = useState(0)
   const [answers,     setAnswers]     = useState([])
-  const [examResult,  setExamResult]  = useState(null)
-  const [examHistory, setExamHistory] = useState(() => load('cp_exam_history', []))
+  const [examResult,    setExamResult]    = useState(null)
+  const [examHistory,   setExamHistory]   = useState(() => load('cp_exam_history', []))
+  const [fullExamQs,    setFullExamQs]    = useState([])
+  const EXAM_QS_PER_AREA = 10
   const [progress,    setProgress]    = useState(() => load('cp_progress', {}))
   const [freeUsed,    setFreeUsed]    = useState(() => load('cp_free', {}))
   const [isPremium,   setIsPremium]   = useState(() => {
@@ -1409,28 +1423,41 @@ export default function App() {
     if (used >= FREE_LIMIT && !isPremium) { setArea(a); setExam(ex); setScreen('paywall'); return }
     const qs = QUESTIONS[a.id] || []
     if (!qs.length) return
-    setArea(a); setExam(ex); setScreen('modeSelect')
+    // Va directo a práctica (examen es por tipo completo, no por área)
+    setArea(a); setExam(ex); setQIdx(0); setAnswers([]); bumpStreak(); setScreen('question')
   }
 
-  function startPractice() {
-    setQIdx(0); setAnswers([]); bumpStreak(); setScreen('question')
-  }
-
-  function startExam() {
-    bumpStreak(); setScreen('examQuestion')
+  function startFullExam() {
+    const activeExam = EXAMS.find(e => e.id === activeExamId) || EXAMS[0]
+    // Tomar N preguntas aleatorias de cada área
+    const questions = activeExam.areas.flatMap(a => {
+      const aqs = [...(QUESTIONS[a.id] || [])]
+      for (let i = aqs.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [aqs[i], aqs[j]] = [aqs[j], aqs[i]]
+      }
+      return aqs.slice(0, EXAM_QS_PER_AREA).map(q => ({ ...q, areaId: a.id, areaName: a.name }))
+    })
+    const fakeArea = { id: '__full__', name: activeExam.name, isFullExam: true }
+    setFullExamQs(questions)
+    setArea(fakeArea)
+    setExam(activeExam)
+    bumpStreak()
+    setScreen('examQuestion')
   }
 
   function finishExam(result) {
-    const ex = exam || EXAMS.find(e => e.areas.some(ar => ar.id === area.id)) || EXAMS[0]
-    const pct = Math.round((result.correct / Math.max(1, result.total)) * 100)
+    const ex       = exam || EXAMS[0]
+    const isFullEx = area?.isFullExam
+    const pct      = Math.round((result.correct / Math.max(1, result.total)) * 100)
     const entry = {
       id:        Date.now(),
       timestamp: Date.now(),
       date:      new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' }),
       examId:    ex.id,
       examName:  ex.name,
-      areaId:    area.id,
-      areaName:  area.name,
+      areaId:    isFullEx ? '__full__' : area.id,
+      areaName:  isFullEx ? `${ex.name} completo` : area.name,
       correct:   result.correct,
       total:     result.total,
       pct,
@@ -1467,7 +1494,7 @@ export default function App() {
     if (area) selectArea(area)
   }
 
-  const qs = area ? (QUESTIONS[area.id] || []) : []
+  const qs = area?.isFullExam ? fullExamQs : (area ? QUESTIONS[area.id] || [] : [])
 
   // Cargando Clerk
   if (!isLoaded) return (
@@ -1518,7 +1545,7 @@ export default function App() {
           user={appUser}
           activeExamId={activeExamId} setActiveExamId={handleSetActiveExamId}
           streak={streak} progress={progress} freeUsed={freeUsed} isPremium={isPremium}
-          onArea={selectArea} onProgress={() => setScreen('progress')} onLogout={logout} onPlans={() => setScreen('paywall')}
+          onArea={selectArea} onProgress={() => setScreen('progress')} onLogout={logout} onPlans={() => setScreen('paywall')} onFullExam={startFullExam}
           dailyGoal={dailyGoal} setDailyGoal={handleSetDailyGoal}
           remindersOn={remindersOn} setRemindersOn={handleSetReminders}
           tutorOn={tutorOn} setTutorOn={handleSetTutor}
