@@ -562,28 +562,15 @@ function HomeScreen({
           </div>
         </div>
 
-        {/* Botones inferiores */}
-        <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-          <button onClick={onProgress} style={{
-            flex: 1, padding: '13px', borderRadius: 14,
-            background: 'transparent', border: `1.5px solid ${T.border}`,
-            color: T.oliveDk, fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 12,
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, cursor: 'pointer',
-          }}>
-            <IconChart size={16} stroke={T.oliveDk} sw={1.7}/> Mi progreso
-          </button>
-          <button onClick={onPlans} style={{
-            flex: 1, padding: '13px', borderRadius: 14,
-            background: isPremium ? T.oliveLt : T.accent,
-            border: 'none',
-            color: isPremium ? T.oliveDk : '#fff',
-            fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 12,
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, cursor: 'pointer',
-          }}>
-            <IconLock size={16} stroke={isPremium ? T.oliveDk : '#fff'} fill={isPremium ? T.oliveLt : T.accent}/>
-            {isPremium ? 'Premium ✓' : 'Ver planes'}
-          </button>
-        </div>
+        {/* Boton progreso */}
+        <button onClick={onProgress} style={{
+          marginTop: 16, width: '100%', padding: '13px', borderRadius: 14,
+          background: 'transparent', border: `1.5px solid ${T.border}`,
+          color: T.oliveDk, fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 13,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer',
+        }}>
+          <IconChart size={17} stroke={T.oliveDk} sw={1.7}/> Ver mi progreso completo
+        </button>
       </div>
     </Shell>
   )
