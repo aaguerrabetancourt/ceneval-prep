@@ -1285,20 +1285,16 @@ function PaywallScreen({ onBack, userEmail, isPremium }) {
 
 // ── Screen: Progress ──────────────────────────────────────────────────────────
 function ProgressScreen({ progress, streak, onBack, onHistory }) {
-  const allAreas = EXAMS.flatMap(e => e.areas.map(a => ({ ...a, examColor: e.color, examName: e.name, examTint: e.tint })))
-  const totAns   = Object.values(progress).reduce((s, v) => s + (v.answered || 0), 0)
-  const totOk    = Object.values(progress).reduce((s, v) => s + (v.correct  || 0), 0)
-  const pct      = totAns > 0 ? Math.round((totOk / totAns) * 100) : 0
+  const totAns = Object.values(progress).reduce((s, v) => s + (v.answered || 0), 0)
+  const totOk  = Object.values(progress).reduce((s, v) => s + (v.correct  || 0), 0)
+  const pct    = totAns > 0 ? Math.round((totOk / totAns) * 100) : 0
 
   return (
     <Shell>
       {/* Header */}
       <div style={{ padding: '16px 20px 12px', borderBottom: `1px solid ${T.border}` }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-          <button onClick={onBack} style={{
-            width: 38, height: 38, borderRadius: 12, border: `1px solid ${T.border}`,
-            background: T.bgCard, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-          }}>
+          <button onClick={onBack} style={{ width: 38, height: 38, borderRadius: 12, border: `1px solid ${T.border}`, background: T.bgCard, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
             <IconArrowLeft size={18} stroke={T.textSub}/>
           </button>
           <LogoMini height={20} style={{ opacity: 0.85 }}/>
@@ -1307,41 +1303,74 @@ function ProgressScreen({ progress, streak, onBack, onHistory }) {
       </div>
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '16px 16px 24px' }}>
-        {/* Summary */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+
+        {/* Resumen global */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 22 }}>
           {[
-            { label: 'Respondidas', val: totAns,    color: T.text  },
-            { label: 'Correctas',   val: totOk,     color: T.olive },
+            { label: 'Respondidas', val: totAns,    color: T.text   },
+            { label: 'Correctas',   val: totOk,     color: T.olive  },
             { label: 'Precisión',   val: `${pct}%`, color: T.accent },
             { label: 'Racha',       val: streak,    color: T.streak },
           ].map(s => (
             <div key={s.label} style={{ flex: 1, background: T.bgCard, border: `1px solid ${T.border}`, borderRadius: 13, padding: '12px 6px', textAlign: 'center' }}>
-              <p style={{ fontFamily: T.fontDisplay, fontSize: 17, fontWeight: 900, color: s.color }}>{s.val}</p>
+              <p style={{ fontFamily: T.fontDisplay, fontSize: 17, fontWeight: 800, color: s.color }}>{s.val}</p>
               <p style={{ fontSize: 9.5, color: T.textMuted, marginTop: 3, lineHeight: 1.3 }}>{s.label}</p>
             </div>
           ))}
         </div>
 
-        <Eyebrow color={T.textMuted} style={{ marginBottom: 10 }}>Por área</Eyebrow>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
-          {allAreas.map(area => {
-            const Icon  = ICONS[area.id]
-            const ap    = progress[area.id] || { answered: 0, correct: 0 }
-            const total = QUESTIONS[area.id]?.length || 1
-            const apct  = Math.round((ap.answered / total) * 100)
+        {/* Por examen */}
+        <Eyebrow color={T.textMuted} style={{ marginBottom: 12 }}>Por examen</Eyebrow>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {EXAMS.map(exam => {
+            const ExIcon   = ICONS[exam.id]
+            const exAns    = exam.areas.reduce((s, a) => s + (progress[a.id]?.answered || 0), 0)
+            const exOk     = exam.areas.reduce((s, a) => s + (progress[a.id]?.correct  || 0), 0)
+            const exTotal  = exam.areas.reduce((s, a) => s + (QUESTIONS[a.id]?.length  || 0), 0)
+            const exPct    = exTotal > 0 ? Math.round((exAns / exTotal) * 100) : 0
+            const exAcc    = exAns  > 0 ? Math.round((exOk  / exAns)   * 100) : 0
             return (
-              <div key={area.id} style={{ background: T.bgCard, border: `1px solid ${T.border}`, borderRadius: 14, padding: '12px 14px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                  <div style={{ width: 34, height: 34, borderRadius: 10, background: area.examTint, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    {Icon && <Icon size={18} stroke={area.examColor} sw={1.6}/>}
+              <div key={exam.id} style={{ background: T.bgCard, border: `1px solid ${T.border}`, borderRadius: 16, overflow: 'hidden', boxShadow: '0 1px 2px rgba(74,67,62,.04)' }}>
+                {/* Cabecera del examen */}
+                <div style={{ padding: '14px 16px 10px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: 11, background: exam.tint, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    {ExIcon && <ExIcon size={21} stroke={exam.color} sw={1.6}/>}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 13, fontWeight: 700, color: T.text }}>{area.name}</p>
-                    <p style={{ fontSize: 10.5, color: T.textSub }}>{area.examName} · {ap.correct}/{total} correctas</p>
+                    <p style={{ fontFamily: T.fontDisplay, fontSize: 15, fontWeight: 800, color: T.text }}>{exam.name}</p>
+                    <p style={{ fontSize: 11, color: T.textSub, marginTop: 1 }}>{exam.short} · {exOk}/{exAns} correctas</p>
                   </div>
-                  <span style={{ fontFamily: T.fontDisplay, fontSize: 14, fontWeight: 800, color: area.examColor }}>{apct}%</span>
+                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                    <p style={{ fontFamily: T.fontDisplay, fontSize: 20, fontWeight: 800, color: exam.color }}>{exAcc}%</p>
+                    <p style={{ fontSize: 10, color: T.textSub }}>aciertos</p>
+                  </div>
                 </div>
-                <Bar value={ap.answered} max={total} color={area.examColor}/>
+
+                {/* Barra global del examen */}
+                <div style={{ padding: '0 16px 10px' }}>
+                  <Bar value={exAns} max={exTotal} color={exam.color}/>
+                  <p style={{ fontSize: 10.5, color: T.textSub, marginTop: 5 }}>{exPct}% completado · {exAns}/{exTotal} preguntas</p>
+                </div>
+
+                {/* Áreas del examen */}
+                <div style={{ borderTop: `1px solid ${T.borderSoft}`, padding: '8px 12px 10px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {exam.areas.map(a => {
+                    const AIcon  = ICONS[a.id]
+                    const ap     = progress[a.id] || { answered: 0, correct: 0 }
+                    const aTotal = QUESTIONS[a.id]?.length || 1
+                    const aPct   = Math.round((ap.answered / aTotal) * 100)
+                    return (
+                      <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        {AIcon && <AIcon size={13} stroke={exam.color} sw={1.6}/>}
+                        <span style={{ flex: 1, fontSize: 11.5, color: T.textSub, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.name}</span>
+                        <div style={{ width: 60, height: 4, borderRadius: 4, background: T.bgMuted, overflow: 'hidden', flexShrink: 0 }}>
+                          <div style={{ height: '100%', width: `${aPct}%`, background: exam.color, borderRadius: 4 }}/>
+                        </div>
+                        <span style={{ fontFamily: T.fontDisplay, fontSize: 11, fontWeight: 700, color: exam.color, width: 32, textAlign: 'right', flexShrink: 0 }}>{aPct}%</span>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
             )
           })}
