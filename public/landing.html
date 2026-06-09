@@ -169,13 +169,13 @@
     .phone-wrap:nth-child(2) { transform: rotateY(0deg) rotateX(1deg) scale(1.05);       z-index: 3; }
     .phone-wrap:nth-child(3) { transform: rotateY(-14deg) rotateX(2deg) translateX(-10px); z-index: 1; }
 
-    /* iPhone 16 – bisel delgado con más espacio en la parte superior */
+    /* iPhone 16 – bisel con espacio para el island arriba */
     .phone-shell {
       position: relative;
       width: 100%;
       background: #161618;
-      border-radius: 34px;          /* menos redondeado */
-      padding: 12px 5px 6px;        /* más espacio arriba, delgado en lados y abajo */
+      border-radius: 34px;
+      padding: 30px 5px 8px;        /* espacio suficiente para el island arriba */
       box-shadow:
         0 0 0 1px rgba(255,255,255,.10),   /* borde metálico sutil */
         0 0 0 2.5px #0d0d0d,
@@ -215,10 +215,10 @@
     }
     .phone-screen img { display: block; width: 100%; }
 
-    /* Dynamic Island flotando SOBRE el contenido */
+    /* Dynamic Island en el bisel negro, sobre la pantalla */
     .phone-island {
       position: absolute;
-      top: 8px; left: 50%;
+      top: 9px; left: 50%;
       transform: translateX(-50%);
       width: 60px; height: 13px;
       background: #000;
@@ -293,8 +293,8 @@
     <div class="phones-row">
       <div class="phone-wrap">
         <div class="phone-shell">
+          <div class="phone-island"></div>
           <div class="phone-screen">
-            <div class="phone-island"></div>
             <img src="/screenshots/home.png" alt="Pantalla principal de Certus" loading="lazy"/>
             <div class="phone-bar"></div>
           </div>
@@ -303,8 +303,8 @@
       </div>
       <div class="phone-wrap">
         <div class="phone-shell">
+          <div class="phone-island"></div>
           <div class="phone-screen">
-            <div class="phone-island"></div>
             <img src="/screenshots/question-answered.png" alt="Práctica con retroalimentación y Tutor IA" loading="lazy"/>
             <div class="phone-bar"></div>
           </div>
@@ -313,8 +313,8 @@
       </div>
       <div class="phone-wrap">
         <div class="phone-shell">
+          <div class="phone-island"></div>
           <div class="phone-screen">
-            <div class="phone-island"></div>
             <img src="/screenshots/progress.png" alt="Seguimiento de progreso por examen" loading="lazy"/>
             <div class="phone-bar"></div>
           </div>
