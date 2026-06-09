@@ -575,13 +575,20 @@ function HomeScreen({
         {/* Botón examen completo */}
         <button onClick={onFullExam} style={{
           marginTop: 16, width: '100%', padding: '14px', borderRadius: 14,
-          background: T.accent, border: 'none',
-          color: '#fff', fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 14,
+          background: isPremium ? T.accent : T.bgCard, border: isPremium ? 'none' : `1.5px solid ${T.border}`,
+          color: isPremium ? '#fff' : T.textSub, fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 14,
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer',
-          boxShadow: '0 2px 8px rgba(176,141,79,.3)',
+          boxShadow: isPremium ? '0 2px 8px rgba(176,141,79,.3)' : 'none',
         }}>
-          <IconChart size={17} stroke="#fff" sw={1.7}/>
+          {isPremium
+            ? <IconChart size={17} stroke="#fff" sw={1.7}/>
+            : <IconLock size={17} stroke={T.accent}/>}
           Realizar examen de {activeExam.name}
+          {!isPremium && (
+            <span style={{ fontSize: 11, fontWeight: 700, color: T.accent, background: T.streakBg, padding: '2px 8px', borderRadius: 999, marginLeft: 4 }}>
+              Premium
+            </span>
+          )}
         </button>
 
         {/* Botón progreso */}
@@ -1645,6 +1652,7 @@ export default function App() {
   }
 
   function startFullExam() {
+    if (!isPremium) { setScreen('paywall'); return }
     const activeExam = EXAMS.find(e => e.id === activeExamId) || EXAMS[0]
     // Tomar N preguntas aleatorias de cada área
     const questions = activeExam.areas.flatMap(a => {
@@ -1805,7 +1813,7 @@ export default function App() {
       {screen === 'examResult' && area && examResult && (
         <ExamResultScreen
           area={area} exam={exam} result={examResult} questions={qs}
-          onRetry={startExam}
+          onRetry={startFullExam}
           onHistory={() => setScreen('examHistory')}
           onHome={() => setScreen('home')}
         />
