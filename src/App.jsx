@@ -583,7 +583,7 @@ function HomeScreen({
           {isPremium
             ? <IconChart size={17} stroke="#fff" sw={1.7}/>
             : <IconLock size={17} stroke={T.accent}/>}
-          Realizar examen de {activeExam.name}
+          Realizar Examen Prueba de {activeExam.name}
           {!isPremium && (
             <span style={{ fontSize: 11, fontWeight: 700, color: T.accent, background: T.streakBg, padding: '2px 8px', borderRadius: 999, marginLeft: 4 }}>
               Premium
