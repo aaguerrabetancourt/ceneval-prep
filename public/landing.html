@@ -148,72 +148,83 @@
 
     /* SCREENSHOTS */
     .screens-section {
-      padding: 56px 24px;
+      padding: 64px 24px 72px;
       background: var(--bg);
       overflow: hidden;
     }
-    .screens-section .inner { max-width: 760px; margin: 0 auto; }
+    .screens-section .inner { max-width: 780px; margin: 0 auto; }
     .phones-row {
       display: flex;
-      gap: 20px;
+      gap: 0;
       justify-content: center;
-      align-items: flex-start;
-      margin-top: 32px;
+      align-items: center;
+      margin-top: 40px;
+      perspective: 1200px;
     }
-    .phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; flex: 1; max-width: 210px; }
+    .phone-wrap {
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+      flex: 1; max-width: 200px;
+      transition: transform .3s ease;
+    }
+    /* Each phone gets its own tilt */
+    .phone-wrap:nth-child(1) { transform: rotateY(14deg) rotateX(2deg) translateX(12px); z-index: 1; }
+    .phone-wrap:nth-child(2) { transform: rotateY(0deg)  rotateX(1deg) scale(1.04);      z-index: 3; }
+    .phone-wrap:nth-child(3) { transform: rotateY(-14deg) rotateX(2deg) translateX(-12px); z-index: 1; }
 
-    /* Black phone shell */
+    /* Slim modern phone shell */
     .phone-shell {
       position: relative;
       width: 100%;
-      background: #111;
-      border-radius: 36px;
-      padding: 12px 7px 14px;
+      background: linear-gradient(160deg, #1c1c1e 0%, #0a0a0a 100%);
+      border-radius: 42px;
+      padding: 10px 5px 10px;
       box-shadow:
-        0 0 0 1.5px #2a2a2a,
-        0 28px 56px rgba(0,0,0,.45),
-        0 8px 20px rgba(0,0,0,.25),
-        inset 0 1px 0 rgba(255,255,255,.07);
+        0 0 0 1px rgba(255,255,255,.08),
+        0 0 0 2px #1a1a1a,
+        0 32px 64px rgba(0,0,0,.55),
+        0 8px 24px rgba(0,0,0,.3),
+        inset 0 1px 0 rgba(255,255,255,.09),
+        inset 0 -1px 0 rgba(0,0,0,.5);
     }
-    /* Side buttons */
+    /* Volume buttons (left) */
     .phone-shell::before {
       content: '';
       position: absolute;
-      left: -3px; top: 72px;
-      width: 3px; height: 28px;
-      background: #222;
-      border-radius: 3px 0 0 3px;
-      box-shadow: 0 38px 0 #222, 0 68px 0 #222;
+      left: -2.5px; top: 80px;
+      width: 2.5px; height: 22px;
+      background: #2a2a2a;
+      border-radius: 2px 0 0 2px;
+      box-shadow: 0 32px 0 #2a2a2a, 0 58px 0 #2a2a2a;
     }
+    /* Power button (right) */
     .phone-shell::after {
       content: '';
       position: absolute;
-      right: -3px; top: 90px;
-      width: 3px; height: 44px;
-      background: #222;
-      border-radius: 0 3px 3px 0;
+      right: -2.5px; top: 96px;
+      width: 2.5px; height: 38px;
+      background: #2a2a2a;
+      border-radius: 0 2px 2px 0;
     }
-    /* Dynamic island notch */
+    /* Dynamic Island */
     .phone-notch {
-      width: 80px; height: 22px;
+      width: 68px; height: 18px;
       background: #000;
       border-radius: 999px;
-      margin: 0 auto 8px;
+      margin: 0 auto 6px;
     }
-    /* Screen area */
+    /* Screen */
     .phone-screen {
-      border-radius: 26px;
+      border-radius: 34px;
       overflow: hidden;
       background: #fff;
-      position: relative;
     }
     .phone-screen img { display: block; width: 100%; }
     /* Home indicator */
     .phone-home-bar {
-      width: 60px; height: 4px;
-      background: rgba(255,255,255,.25);
+      width: 52px; height: 3px;
+      background: rgba(255,255,255,.2);
       border-radius: 999px;
-      margin: 10px auto 0;
+      margin: 7px auto 0;
     }
 
     .phone-label { font-size: 12px; font-weight: 600; color: var(--sub); text-align: center; }
@@ -222,9 +233,10 @@
       .exams-grid { grid-template-columns: 1fr; }
       .stats { flex-wrap: wrap; }
       .stat { min-width: 50%; }
-      .phones-row { gap: 12px; }
-      .phone-wrap { max-width: none; flex: 0 0 calc(50% - 6px); }
-      .phone-wrap:last-child { display: none; }
+      .phones-row { perspective: 800px; gap: 0; }
+      .phone-wrap { max-width: none; flex: 0 0 calc(50% - 4px); }
+      .phone-wrap:nth-child(1) { transform: rotateY(8deg) translateX(6px); }
+      .phone-wrap:nth-child(3) { display: none; }
     }
   </style>
 </head>
