@@ -155,29 +155,75 @@
     .screens-section .inner { max-width: 760px; margin: 0 auto; }
     .phones-row {
       display: flex;
-      gap: 16px;
+      gap: 20px;
       justify-content: center;
       align-items: flex-start;
       margin-top: 32px;
     }
-    .phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; max-width: 220px; }
-    .phone-frame {
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: 0 20px 50px rgba(59,54,47,.18), 0 2px 8px rgba(59,54,47,.08);
-      border: 2px solid rgba(59,54,47,.08);
-      background: #fff;
+    .phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; flex: 1; max-width: 210px; }
+
+    /* Black phone shell */
+    .phone-shell {
+      position: relative;
       width: 100%;
+      background: #111;
+      border-radius: 36px;
+      padding: 12px 7px 14px;
+      box-shadow:
+        0 0 0 1.5px #2a2a2a,
+        0 28px 56px rgba(0,0,0,.45),
+        0 8px 20px rgba(0,0,0,.25),
+        inset 0 1px 0 rgba(255,255,255,.07);
     }
-    .phone-frame img { display: block; width: 100%; }
+    /* Side buttons */
+    .phone-shell::before {
+      content: '';
+      position: absolute;
+      left: -3px; top: 72px;
+      width: 3px; height: 28px;
+      background: #222;
+      border-radius: 3px 0 0 3px;
+      box-shadow: 0 38px 0 #222, 0 68px 0 #222;
+    }
+    .phone-shell::after {
+      content: '';
+      position: absolute;
+      right: -3px; top: 90px;
+      width: 3px; height: 44px;
+      background: #222;
+      border-radius: 0 3px 3px 0;
+    }
+    /* Dynamic island notch */
+    .phone-notch {
+      width: 80px; height: 22px;
+      background: #000;
+      border-radius: 999px;
+      margin: 0 auto 8px;
+    }
+    /* Screen area */
+    .phone-screen {
+      border-radius: 26px;
+      overflow: hidden;
+      background: #fff;
+      position: relative;
+    }
+    .phone-screen img { display: block; width: 100%; }
+    /* Home indicator */
+    .phone-home-bar {
+      width: 60px; height: 4px;
+      background: rgba(255,255,255,.25);
+      border-radius: 999px;
+      margin: 10px auto 0;
+    }
+
     .phone-label { font-size: 12px; font-weight: 600; color: var(--sub); text-align: center; }
 
     @media (max-width: 480px) {
       .exams-grid { grid-template-columns: 1fr; }
       .stats { flex-wrap: wrap; }
       .stat { min-width: 50%; }
-      .phones-row { gap: 10px; }
-      .phone-wrap { max-width: none; flex: 0 0 calc(50% - 5px); }
+      .phones-row { gap: 12px; }
+      .phone-wrap { max-width: none; flex: 0 0 calc(50% - 6px); }
       .phone-wrap:last-child { display: none; }
     }
   </style>
@@ -224,20 +270,32 @@
     <div class="section-sub" style="text-align:center; max-width:480px; margin:0 auto;">Diseñada para estudiar en cualquier momento, desde tu celular. Preguntas reales, retroalimentación inmediata y seguimiento de tu progreso.</div>
     <div class="phones-row">
       <div class="phone-wrap">
-        <div class="phone-frame">
-          <img src="/screenshots/home.png" alt="Pantalla principal de Certus mostrando áreas de estudio EXANI-I" loading="lazy"/>
+        <div class="phone-shell">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <img src="/screenshots/home.png" alt="Pantalla principal de Certus mostrando áreas de estudio EXANI-I" loading="lazy"/>
+          </div>
+          <div class="phone-home-bar"></div>
         </div>
         <div class="phone-label">Inicio &amp; Áreas</div>
       </div>
       <div class="phone-wrap">
-        <div class="phone-frame">
-          <img src="/screenshots/question-answered.png" alt="Pregunta de práctica con retroalimentación correcta y Tutor IA" loading="lazy"/>
+        <div class="phone-shell">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <img src="/screenshots/question-answered.png" alt="Pregunta de práctica con retroalimentación y Tutor IA" loading="lazy"/>
+          </div>
+          <div class="phone-home-bar"></div>
         </div>
         <div class="phone-label">Práctica con Tutor IA</div>
       </div>
       <div class="phone-wrap">
-        <div class="phone-frame">
-          <img src="/screenshots/progress.png" alt="Pantalla de progreso mostrando avance por examen y área" loading="lazy"/>
+        <div class="phone-shell">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <img src="/screenshots/progress.png" alt="Pantalla de progreso mostrando avance por examen y área" loading="lazy"/>
+          </div>
+          <div class="phone-home-bar"></div>
         </div>
         <div class="phone-label">Mi Progreso</div>
       </div>
