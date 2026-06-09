@@ -175,7 +175,7 @@
       width: 100%;
       background: #161618;
       border-radius: 34px;
-      padding: 22px 5px 8px;        /* espacio justo para el island arriba */
+      padding: 5px 5px 8px;         /* bisel uniforme en todos los lados */
       box-shadow:
         0 0 0 1px rgba(255,255,255,.10),   /* borde metálico sutil */
         0 0 0 2.5px #0d0d0d,
@@ -208,22 +208,24 @@
     /* Pantalla ocupa casi todo el frente */
     .phone-screen {
       position: relative;
-      border-radius: 28px;          /* menos redondeado, acorde al shell */
+      border-radius: 28px;
       overflow: hidden;
-      background: #000;
-      line-height: 0;               /* elimina espacio bajo la imagen */
+      background: #F1EBDE;
+      line-height: 0;
+    }
+    /* Barra de estado del mismo color que la app — la isla flota aquí sin tapar nada */
+    .phone-statusbar {
+      height: 26px;
+      background: #F1EBDE;
     }
     .phone-screen img { display: block; width: 100%; }
 
-    /* Dynamic Island en el bisel negro, sobre la pantalla */
+    /* Dynamic Island centrada dentro de la barra de estado */
     .phone-island {
-      position: absolute;
-      top: 9px; left: 50%;
-      transform: translateX(-50%);
       width: 60px; height: 13px;
       background: #000;
       border-radius: 999px;
-      z-index: 10;
+      margin: 7px auto 0;
     }
 
     /* Barra de inicio flotando en la pantalla */
@@ -293,8 +295,8 @@
     <div class="phones-row">
       <div class="phone-wrap">
         <div class="phone-shell">
-          <div class="phone-island"></div>
           <div class="phone-screen">
+            <div class="phone-statusbar"><div class="phone-island"></div></div>
             <img src="/screenshots/home.png" alt="Pantalla principal de Certus" loading="lazy"/>
             <div class="phone-bar"></div>
           </div>
@@ -303,8 +305,8 @@
       </div>
       <div class="phone-wrap">
         <div class="phone-shell">
-          <div class="phone-island"></div>
           <div class="phone-screen">
+            <div class="phone-statusbar"><div class="phone-island"></div></div>
             <img src="/screenshots/question-answered.png" alt="Práctica con retroalimentación y Tutor IA" loading="lazy"/>
             <div class="phone-bar"></div>
           </div>
@@ -313,8 +315,8 @@
       </div>
       <div class="phone-wrap">
         <div class="phone-shell">
-          <div class="phone-island"></div>
           <div class="phone-screen">
+            <div class="phone-statusbar"><div class="phone-island"></div></div>
             <img src="/screenshots/progress.png" alt="Seguimiento de progreso por examen" loading="lazy"/>
             <div class="phone-bar"></div>
           </div>
