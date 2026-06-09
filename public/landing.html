@@ -169,13 +169,13 @@
     .phone-wrap:nth-child(2) { transform: rotateY(0deg) rotateX(1deg) scale(1.05);       z-index: 3; }
     .phone-wrap:nth-child(3) { transform: rotateY(-14deg) rotateX(2deg) translateX(-10px); z-index: 1; }
 
-    /* iPhone 16 – biseles uniformes y delgados (~4 px) */
+    /* iPhone 16 – bisel delgado con más espacio en la parte superior */
     .phone-shell {
       position: relative;
       width: 100%;
       background: #161618;
-      border-radius: 46px;          /* radio exterior igual en todos los lados */
-      padding: 4px;                 /* bisel ultra-delgado y uniforme */
+      border-radius: 34px;          /* menos redondeado */
+      padding: 12px 5px 6px;        /* más espacio arriba, delgado en lados y abajo */
       box-shadow:
         0 0 0 1px rgba(255,255,255,.10),   /* borde metálico sutil */
         0 0 0 2.5px #0d0d0d,
@@ -208,7 +208,7 @@
     /* Pantalla ocupa casi todo el frente */
     .phone-screen {
       position: relative;
-      border-radius: 42px;          /* ligeramente menor que el exterior */
+      border-radius: 28px;          /* menos redondeado, acorde al shell */
       overflow: hidden;
       background: #000;
       line-height: 0;               /* elimina espacio bajo la imagen */
