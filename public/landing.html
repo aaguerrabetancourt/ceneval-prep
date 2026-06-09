@@ -163,68 +163,78 @@
     }
     .phone-wrap {
       display: flex; flex-direction: column; align-items: center; gap: 14px;
-      flex: 1; max-width: 200px;
-      transition: transform .3s ease;
+      flex: 1; max-width: 195px;
     }
-    /* Each phone gets its own tilt */
-    .phone-wrap:nth-child(1) { transform: rotateY(14deg) rotateX(2deg) translateX(12px); z-index: 1; }
-    .phone-wrap:nth-child(2) { transform: rotateY(0deg)  rotateX(1deg) scale(1.04);      z-index: 3; }
-    .phone-wrap:nth-child(3) { transform: rotateY(-14deg) rotateX(2deg) translateX(-12px); z-index: 1; }
+    .phone-wrap:nth-child(1) { transform: rotateY(14deg) rotateX(2deg) translateX(10px); z-index: 1; }
+    .phone-wrap:nth-child(2) { transform: rotateY(0deg) rotateX(1deg) scale(1.05);       z-index: 3; }
+    .phone-wrap:nth-child(3) { transform: rotateY(-14deg) rotateX(2deg) translateX(-10px); z-index: 1; }
 
-    /* Slim modern phone shell */
+    /* iPhone 16 – biseles uniformes y delgados (~4 px) */
     .phone-shell {
       position: relative;
       width: 100%;
-      background: linear-gradient(160deg, #1c1c1e 0%, #0a0a0a 100%);
-      border-radius: 42px;
-      padding: 10px 5px 10px;
+      background: #161618;
+      border-radius: 46px;          /* radio exterior igual en todos los lados */
+      padding: 4px;                 /* bisel ultra-delgado y uniforme */
       box-shadow:
-        0 0 0 1px rgba(255,255,255,.08),
-        0 0 0 2px #1a1a1a,
-        0 32px 64px rgba(0,0,0,.55),
-        0 8px 24px rgba(0,0,0,.3),
-        inset 0 1px 0 rgba(255,255,255,.09),
-        inset 0 -1px 0 rgba(0,0,0,.5);
+        0 0 0 1px rgba(255,255,255,.10),   /* borde metálico sutil */
+        0 0 0 2.5px #0d0d0d,
+        0 30px 70px rgba(0,0,0,.60),
+        0 10px 28px rgba(0,0,0,.35),
+        inset 0 1px 0 rgba(255,255,255,.10),
+        inset 0 -1px 0 rgba(0,0,0,.6);
     }
-    /* Volume buttons (left) */
+    /* Botón Action (izq arriba) */
     .phone-shell::before {
       content: '';
       position: absolute;
-      left: -2.5px; top: 80px;
-      width: 2.5px; height: 22px;
-      background: #2a2a2a;
+      left: -2.5px; top: 60px;
+      width: 2.5px; height: 18px;
+      background: #1e1e1e;
       border-radius: 2px 0 0 2px;
-      box-shadow: 0 32px 0 #2a2a2a, 0 58px 0 #2a2a2a;
+      /* Botones de volumen debajo */
+      box-shadow: 0 30px 0 #1e1e1e, 0 54px 0 #1e1e1e;
     }
-    /* Power button (right) */
+    /* Botón encendido (der) */
     .phone-shell::after {
       content: '';
       position: absolute;
-      right: -2.5px; top: 96px;
-      width: 2.5px; height: 38px;
-      background: #2a2a2a;
+      right: -2.5px; top: 80px;
+      width: 2.5px; height: 40px;
+      background: #1e1e1e;
       border-radius: 0 2px 2px 0;
     }
-    /* Dynamic Island */
-    .phone-notch {
-      width: 68px; height: 18px;
-      background: #000;
-      border-radius: 999px;
-      margin: 0 auto 6px;
-    }
-    /* Screen */
+
+    /* Pantalla ocupa casi todo el frente */
     .phone-screen {
-      border-radius: 34px;
+      position: relative;
+      border-radius: 42px;          /* ligeramente menor que el exterior */
       overflow: hidden;
-      background: #fff;
+      background: #000;
+      line-height: 0;               /* elimina espacio bajo la imagen */
     }
     .phone-screen img { display: block; width: 100%; }
-    /* Home indicator */
-    .phone-home-bar {
-      width: 52px; height: 3px;
-      background: rgba(255,255,255,.2);
+
+    /* Dynamic Island flotando SOBRE el contenido */
+    .phone-island {
+      position: absolute;
+      top: 10px; left: 50%;
+      transform: translateX(-50%);
+      width: 72px; height: 22px;
+      background: #000;
       border-radius: 999px;
-      margin: 7px auto 0;
+      z-index: 10;
+    }
+
+    /* Barra de inicio flotando en la pantalla */
+    .phone-bar {
+      position: absolute;
+      bottom: 6px; left: 50%;
+      transform: translateX(-50%);
+      width: 80px; height: 4px;
+      background: rgba(0,0,0,.35);
+      border-radius: 999px;
+      z-index: 10;
     }
 
     .phone-label { font-size: 12px; font-weight: 600; color: var(--sub); text-align: center; }
@@ -233,7 +243,7 @@
       .exams-grid { grid-template-columns: 1fr; }
       .stats { flex-wrap: wrap; }
       .stat { min-width: 50%; }
-      .phones-row { perspective: 800px; gap: 0; }
+      .phones-row { perspective: 800px; }
       .phone-wrap { max-width: none; flex: 0 0 calc(50% - 4px); }
       .phone-wrap:nth-child(1) { transform: rotateY(8deg) translateX(6px); }
       .phone-wrap:nth-child(3) { display: none; }
@@ -283,31 +293,31 @@
     <div class="phones-row">
       <div class="phone-wrap">
         <div class="phone-shell">
-          <div class="phone-notch"></div>
           <div class="phone-screen">
-            <img src="/screenshots/home.png" alt="Pantalla principal de Certus mostrando áreas de estudio EXANI-I" loading="lazy"/>
+            <div class="phone-island"></div>
+            <img src="/screenshots/home.png" alt="Pantalla principal de Certus" loading="lazy"/>
+            <div class="phone-bar"></div>
           </div>
-          <div class="phone-home-bar"></div>
         </div>
         <div class="phone-label">Inicio &amp; Áreas</div>
       </div>
       <div class="phone-wrap">
         <div class="phone-shell">
-          <div class="phone-notch"></div>
           <div class="phone-screen">
-            <img src="/screenshots/question-answered.png" alt="Pregunta de práctica con retroalimentación y Tutor IA" loading="lazy"/>
+            <div class="phone-island"></div>
+            <img src="/screenshots/question-answered.png" alt="Práctica con retroalimentación y Tutor IA" loading="lazy"/>
+            <div class="phone-bar"></div>
           </div>
-          <div class="phone-home-bar"></div>
         </div>
         <div class="phone-label">Práctica con Tutor IA</div>
       </div>
       <div class="phone-wrap">
         <div class="phone-shell">
-          <div class="phone-notch"></div>
           <div class="phone-screen">
-            <img src="/screenshots/progress.png" alt="Pantalla de progreso mostrando avance por examen y área" loading="lazy"/>
+            <div class="phone-island"></div>
+            <img src="/screenshots/progress.png" alt="Seguimiento de progreso por examen" loading="lazy"/>
+            <div class="phone-bar"></div>
           </div>
-          <div class="phone-home-bar"></div>
         </div>
         <div class="phone-label">Mi Progreso</div>
       </div>
