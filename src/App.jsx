@@ -10,6 +10,7 @@ import {
 } from './icons'
 
 const FREE_LIMIT = 3
+const FREE_PERIOD = true // Periodo de prueba: todos tienen acceso completo. Cambiar a false para reactivar Stripe.
 
 // ── Storage helpers ──────────────────────────────────────────────────────────
 function load(key, fallback) {
@@ -1709,7 +1710,7 @@ export default function App() {
   const [progress,    setProgress]    = useState(() => load('cp_progress', {}))
   const [freeUsed,    setFreeUsed]    = useState(() => load('cp_free', {}))
   const [isPremium,   setIsPremium]   = useState(() => {
-    // Detectar regreso exitoso de Stripe
+    if (FREE_PERIOD) return true
     const params = new URLSearchParams(window.location.search)
     if (params.get('payment') === 'success') {
       save('cp_premium', true)
