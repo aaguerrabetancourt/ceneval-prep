@@ -85,11 +85,14 @@ function ReportModal({ question, area, qIndex, total, onClose }) {
 
   function submit() {
     if (!text.trim()) return
-    const subject = encodeURIComponent(`[Certus] Error en pregunta – ${area.name} #${qIndex + 1}`)
-    const body = encodeURIComponent(
-      `Área: ${area.name}\nPregunta ${qIndex + 1} de ${total}\n\nTexto de la pregunta:\n${question.q}\n\nError reportado:\n${text.trim()}`
-    )
-    window.open(`mailto:info@certusapp.mx?subject=${subject}&body=${body}`)
+    const base = 'https://docs.google.com/forms/d/e/1FAIpQLSdtjX4J2KAS_I86DuU1xpPl2dgtNiBUI8eazV7TwapnUvbebg/viewform'
+    const params = new URLSearchParams({
+      'entry.1968707':    area.name,
+      'entry.59205752':   `${qIndex + 1} de ${total}`,
+      'entry.2053967998': question.q,
+      'entry.447966706':  text.trim(),
+    })
+    window.open(`${base}?${params.toString()}`)
     setSent(true)
     setTimeout(onClose, 1800)
   }
