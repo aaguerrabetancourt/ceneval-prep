@@ -78,6 +78,93 @@ function Ring({ pct = 0, color, size = 58, sw = 5, track = T.bgMuted }) {
   )
 }
 
+// ── ReportModal ──────────────────────────────────────────────────────────────
+function ReportModal({ question, area, qIndex, total, onClose }) {
+  const [text, setText] = useState('')
+  const [sent, setSent] = useState(false)
+
+  function submit() {
+    if (!text.trim()) return
+    const subject = encodeURIComponent(`[Certus] Error en pregunta – ${area.name} #${qIndex + 1}`)
+    const body = encodeURIComponent(
+      `Área: ${area.name}\nPregunta ${qIndex + 1} de ${total}\n\nTexto de la pregunta:\n${question.q}\n\nError reportado:\n${text.trim()}`
+    )
+    window.open(`mailto:info@certusapp.mx?subject=${subject}&body=${body}`)
+    setSent(true)
+    setTimeout(onClose, 1800)
+  }
+
+  return (
+    <>
+      {/* Scrim */}
+      <div onClick={onClose} style={{
+        position: 'fixed', inset: 0, zIndex: 50,
+        background: 'rgba(30,26,22,.55)', backdropFilter: 'blur(4px)',
+      }}/>
+      {/* Panel */}
+      <div style={{
+        position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
+        width: '100%', maxWidth: 480, zIndex: 51,
+        background: T.bgCard, borderRadius: '20px 20px 0 0',
+        padding: '20px 20px 36px', boxShadow: '0 -8px 32px rgba(0,0,0,.18)',
+      }}>
+        {/* Handle */}
+        <div style={{ width: 36, height: 4, borderRadius: 999, background: T.border, margin: '0 auto 18px' }}/>
+
+        <p style={{ fontFamily: T.fontDisplay, fontSize: 16, fontWeight: 800, color: T.text, marginBottom: 4 }}>
+          Reportar un error
+        </p>
+        <p style={{ fontSize: 12.5, color: T.textSub, marginBottom: 14, lineHeight: 1.5 }}>
+          Pregunta {qIndex + 1}/{total} · {area.name}
+        </p>
+
+        {/* Contexto de la pregunta */}
+        <div style={{ background: T.bg, borderRadius: 10, padding: '10px 12px', marginBottom: 14, border: `1px solid ${T.border}` }}>
+          <p style={{ fontSize: 12, color: T.textSub, lineHeight: 1.5, fontStyle: 'italic' }}>
+            "{question.q.length > 120 ? question.q.slice(0, 120) + '…' : question.q}"
+          </p>
+        </div>
+
+        {sent ? (
+          <div style={{ textAlign: 'center', padding: '16px 0', color: T.olive, fontWeight: 700, fontSize: 14 }}>
+            ✓ ¡Gracias! Tu reporte fue enviado.
+          </div>
+        ) : (
+          <>
+            <textarea
+              autoFocus
+              value={text}
+              onChange={e => setText(e.target.value)}
+              placeholder="Describe el error: ¿la pregunta está mal redactada, la respuesta correcta es incorrecta, hay un error tipográfico…?"
+              style={{
+                width: '100%', minHeight: 100, padding: '11px 13px',
+                borderRadius: 12, border: `1.5px solid ${T.border}`,
+                background: T.bg, color: T.text, fontSize: 13.5,
+                fontFamily: T.fontBody, lineHeight: 1.6, resize: 'vertical',
+                outline: 'none', boxSizing: 'border-box',
+              }}
+            />
+            <div style={{ display: 'flex', gap: 10, marginTop: 12 }}>
+              <button onClick={onClose} style={{
+                flex: 1, padding: '12px', borderRadius: 13,
+                border: `1.5px solid ${T.border}`, background: 'none',
+                color: T.textSub, fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 13.5, cursor: 'pointer',
+              }}>Cancelar</button>
+              <button onClick={submit} disabled={!text.trim()} style={{
+                flex: 2, padding: '12px', borderRadius: 13, border: 'none',
+                background: text.trim() ? T.terra : T.bgMuted,
+                color: text.trim() ? '#fff' : T.textMuted,
+                fontFamily: T.fontDisplay, fontWeight: 700, fontSize: 13.5, cursor: text.trim() ? 'pointer' : 'default',
+                transition: 'background .2s',
+              }}>Enviar reporte</button>
+            </div>
+          </>
+        )}
+      </div>
+    </>
+  )
+}
+
 // ── Toggle ───────────────────────────────────────────────────────────────────
 function Toggle({ on, onClick }) {
   return (
@@ -607,10 +694,11 @@ function HomeScreen({
 
 // ── Screen: Question ──────────────────────────────────────────────────────────
 function QuestionScreen({ area, exam, qIndex, questions, streak, aiKey, onAnswer, onNext, onQuit }) {
-  const [sel,       setSel]       = useState(null)
-  const [answered,  setAnswered]  = useState(false)
-  const [aiLoading, setAiLoading] = useState(false)
-  const [aiText,    setAiText]    = useState(null)
+  const [sel,         setSel]         = useState(null)
+  const [answered,    setAnswered]    = useState(false)
+  const [aiLoading,   setAiLoading]   = useState(false)
+  const [aiText,      setAiText]      = useState(null)
+  const [reportOpen,  setReportOpen]  = useState(false)
 
   const q = questions[qIndex]
   if (!q) return null
@@ -665,6 +753,13 @@ function QuestionScreen({ area, exam, qIndex, questions, streak, aiKey, onAnswer
       <div style={{ padding: '4px 18px 14px', display: 'flex', alignItems: 'center', gap: 7 }}>
         {AreaIcon && <AreaIcon size={15} stroke={T.oliveDk} sw={1.7}/>}
         <Eyebrow color={T.oliveDk}>{area.name} · {qIndex + 1}/{questions.length}</Eyebrow>
+        <button onClick={() => setReportOpen(true)} style={{
+          marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 4,
+          background: 'none', border: 'none', padding: '4px 2px', cursor: 'pointer',
+          color: T.textMuted, fontSize: 11, fontWeight: 600,
+        }}>
+          <span style={{ fontSize: 13 }}>⚑</span> Reportar error
+        </button>
       </div>
 
       {/* Cuerpo */}
@@ -745,6 +840,14 @@ function QuestionScreen({ area, exam, qIndex, questions, streak, aiKey, onAnswer
             <IconArrowRight size={17} stroke="#fff"/>
           </button>
         </div>
+      )}
+
+      {reportOpen && (
+        <ReportModal
+          question={q} area={area}
+          qIndex={qIndex} total={questions.length}
+          onClose={() => setReportOpen(false)}
+        />
       )}
     </Shell>
   )
